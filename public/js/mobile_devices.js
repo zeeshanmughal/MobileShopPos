@@ -1,0 +1,158 @@
+const appleMobileDevices = [
+    { brand: 'Apple', model: 'iPhone 4' },
+    { brand: 'Apple', model: 'iPhone 4s' },
+    { brand: 'Apple', model: 'iPhone 5' },
+    { brand: 'Apple', model: 'iPhone 5c' },
+    { brand: 'Apple', model: 'iPhone 5s' },
+    { brand: 'Apple', model: 'iPhone 6' },
+    { brand: 'Apple', model: 'iPhone 6 Plus' },
+    { brand: 'Apple', model: 'iPhone 6s' },
+    { brand: 'Apple', model: 'iPhone 6s Plus' },
+    { brand: 'Apple', model: 'iPhone SE' },
+    { brand: 'Apple', model: 'iPhone 7' },
+    { brand: 'Apple', model: 'iPhone 7 Plus' },
+    { brand: 'Apple', model: 'iPhone 8' },
+    { brand: 'Apple', model: 'iPhone 8 Plus' },
+    { brand: 'Apple', model: 'iPhone X' },
+    { brand: 'Apple', model: 'iPhone XR' },
+    { brand: 'Apple', model: 'iPhone XS' },
+    { brand: 'Apple', model: 'iPhone XS Max' },
+    { brand: 'Apple', model: 'iPhone 11' },
+    { brand: 'Apple', model: 'iPhone 11 Pro' },
+    { brand: 'Apple', model: 'iPhone 11 Pro Max' },
+    { brand: 'Apple', model: 'iPhone SE (2nd generation)' },
+    { brand: 'Apple', model: 'iPhone 12 Mini' },
+    { brand: 'Apple', model: 'iPhone 12' },
+    { brand: 'Apple', model: 'iPhone 12 Pro' },
+    { brand: 'Apple', model: 'iPhone 12 Pro Max' },
+    { brand: 'Apple', model: 'iPhone 13 Mini' },
+    { brand: 'Apple', model: 'iPhone 13' },
+    { brand: 'Apple', model: 'iPhone 13 Pro' },
+    { brand: 'Apple', model: 'iPhone 13 Pro Max' }
+    // ... (additional iPhone models)
+  ];
+
+
+  const samsungMobileDevices = [
+    { brand: 'Samsung', model: 'Galaxy S' },
+    { brand: 'Samsung', model: 'Galaxy S Plus' },
+    { brand: 'Samsung', model: 'Galaxy S2' },
+    { brand: 'Samsung', model: 'Galaxy S2 Plus' },
+    { brand: 'Samsung', model: 'Galaxy S3' },
+    { brand: 'Samsung', model: 'Galaxy S3 Mini' },
+    { brand: 'Samsung', model: 'Galaxy S4' },
+    { brand: 'Samsung', model: 'Galaxy S4 Mini' },
+    { brand: 'Samsung', model: 'Galaxy S5' },
+    { brand: 'Samsung', model: 'Galaxy S5 Mini' },
+    { brand: 'Samsung', model: 'Galaxy S6' },
+    { brand: 'Samsung', model: 'Galaxy S6 Edge' },
+    { brand: 'Samsung', model: 'Galaxy S6 Edge Plus' },
+    { brand: 'Samsung', model: 'Galaxy S6 Active' },
+    { brand: 'Samsung', model: 'Galaxy S7' },
+    { brand: 'Samsung', model: 'Galaxy S7 Edge' },
+    { brand: 'Samsung', model: 'Galaxy S7 Active' },
+    { brand: 'Samsung', model: 'Galaxy S8' },
+    { brand: 'Samsung', model: 'Galaxy S8 Plus' },
+    { brand: 'Samsung', model: 'Galaxy S8 Active' },
+    { brand: 'Samsung', model: 'Galaxy S9' },
+    { brand: 'Samsung', model: 'Galaxy S9 Plus' },
+    { brand: 'Samsung', model: 'Galaxy S10' },
+    { brand: 'Samsung', model: 'Galaxy S10e' },
+    { brand: 'Samsung', model: 'Galaxy S10 Plus' },
+    { brand: 'Samsung', model: 'Galaxy S10 5G' },
+    { brand: 'Samsung', model: 'Galaxy S20' },
+    { brand: 'Samsung', model: 'Galaxy S20 Plus' },
+    { brand: 'Samsung', model: 'Galaxy S20 Ultra' }
+    // ... (additional Samsung Galaxy models)
+  ];
+
+  const htcMobileDevices = [
+    { brand: 'HTC', model: 'Desire 21 Pro 5G' },
+    { brand: 'HTC', model: 'U20 5G' },
+    { brand: 'HTC', model: 'Desire 20 Pro' },
+    { brand: 'HTC', model: 'U12 Life' },
+    { brand: 'HTC', model: 'U11' },
+    { brand: 'HTC', model: 'U11+' },
+    { brand: 'HTC', model: 'U11 Life' },
+    { brand: 'HTC', model: '10' },
+    { brand: 'HTC', model: '10 evo' },
+    { brand: 'HTC', model: 'Desire 830' },
+    { brand: 'HTC', model: 'Desire 825' },
+    { brand: 'HTC', model: 'Desire 628' },
+    { brand: 'HTC', model: 'One X9' },
+    // ... (additional HTC models)
+  ];
+
+  const sonyMobileDevices = [
+    { brand: 'Sony', model: 'Xperia 1 III' },
+    { brand: 'Sony', model: 'Xperia 10 III' },
+    { brand: 'Sony', model: 'Xperia 5 III' },
+    { brand: 'Sony', model: 'Xperia Pro' },
+    { brand: 'Sony', model: 'Xperia 1 II' },
+    { brand: 'Sony', model: 'Xperia 5 II' },
+    { brand: 'Sony', model: 'Xperia 10 II' },
+    { brand: 'Sony', model: 'Xperia L4' },
+    { brand: 'Sony', model: 'Xperia 8' },
+    { brand: 'Sony', model: 'Xperia 5' },
+    { brand: 'Sony', model: 'Xperia 1' },
+    { brand: 'Sony', model: 'Xperia 10 Plus' },
+    { brand: 'Sony', model: 'Xperia 10' },
+    { brand: 'Sony', model: 'Xperia XZ2 Premium' },
+    { brand: 'Sony', model: 'Xperia XZ2 Compact' },
+    { brand: 'Sony', model: 'Xperia XZ2' },
+    { brand: 'Sony', model: 'Xperia XA2 Ultra' },
+    { brand: 'Sony', model: 'Xperia XA2 Plus' },
+    { brand: 'Sony', model: 'Xperia XA2' },
+    // ... (additional Sony models)
+  ];
+
+  const huaweiMobileDevices = [
+    { brand: 'Huawei', model: 'P50 Pro' },
+    { brand: 'Huawei', model: 'P50' },
+    { brand: 'Huawei', model: 'Mate 40E Pro' },
+    { brand: 'Huawei', model: 'Mate 40 Pro' },
+    { brand: 'Huawei', model: 'Mate 40' },
+    { brand: 'Huawei', model: 'Mate 40 RS' },
+    { brand: 'Huawei', model: 'P40 Pro+' },
+    { brand: 'Huawei', model: 'P40 Pro' },
+    { brand: 'Huawei', model: 'P40' },
+    { brand: 'Huawei', model: 'P30 Pro' },
+    { brand: 'Huawei', model: 'P30' },
+    { brand: 'Huawei', model: 'Mate 30 Pro' },
+    { brand: 'Huawei', model: 'Mate 30' },
+    { brand: 'Huawei', model: 'Mate 20 Pro' },
+    { brand: 'Huawei', model: 'Mate 20' },
+    // ... (additional Huawei models)
+  ];
+
+  const onePlusMobileDevices = [
+    { brand: 'OnePlus', model: '9 Pro' },
+    { brand: 'OnePlus', model: '9' },
+    { brand: 'OnePlus', model: '8T' },
+    { brand: 'OnePlus', model: '8 Pro' },
+    { brand: 'OnePlus', model: '8' },
+    { brand: 'OnePlus', model: '7T Pro' },
+    { brand: 'OnePlus', model: '7T' },
+    { brand: 'OnePlus', model: '7 Pro' },
+    { brand: 'OnePlus', model: '7' },
+    { brand: 'OnePlus', model: '6T' },
+    { brand: 'OnePlus', model: '6' },
+    { brand: 'OnePlus', model: '5T' },
+    { brand: 'OnePlus', model: '5' },
+    // ... (additional OnePlus models)
+  ];
+
+  const googlePixelDevices = [
+    { brand: 'Google Pixel', model: '6 Pro' },
+    { brand: 'Google Pixel', model: '6' },
+    { brand: 'Google Pixel', model: '5a' },
+    { brand: 'Google Pixel', model: '5' },
+    { brand: 'Google Pixel', model: '4a' },
+    { brand: 'Google Pixel', model: '4 XL' },
+    { brand: 'Google Pixel', model: '4' },
+    { brand: 'Google Pixel', model: '3a XL' },
+    { brand: 'Google Pixel', model: '3a' },
+    { brand: 'Google Pixel', model: '3 XL' },
+    { brand: 'Google Pixel', model: '3' },
+    // ... (additional Google Pixel models)
+  ];
