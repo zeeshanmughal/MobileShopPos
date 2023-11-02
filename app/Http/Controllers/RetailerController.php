@@ -13,11 +13,11 @@ class RetailerController extends Controller
 
 
     public function customers(){
-        return view('retailer.customers');
+        return view('retailer.customer_create');
     }
 
-    public function walk_in(){
-        return view('retailer.walk_in');
+    public function walkInByRetailer(){
+        return view('retailer.walkIn_by_retailer');
     }
 
     public function items(){

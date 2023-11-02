@@ -30,11 +30,13 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/retailer/dashboard', [RetailerController::class, 'dashboard'])->name('retailer.dashboard');
 Route::get('customer/create', [RetailerController::class, 'customers'])->name('customer.create');
-Route::get('/walk-in-customer/create', [RetailerController::class, 'walk_in'])->name('walkin.create');
+Route::get('/walk-in-customer/create', [RetailerController::class, 'walkInByRetailer'])->name('walkInByRetailer.create');
 Route::get('/item/create', [RetailerController::class, 'items'])->name('item.create');
-
+Route::get('/walk-in-customer', [CustomerController::class,'getWalkinCustomerForm'])->name('walkInByCustomer.create');
 // Customers Routes
-Route::get('customers', [CustomerController::class,'index']);
+
+Route::get('/qrcode', [CustomerController::class, 'generateQRCode'])->name('qrcode.generate');
+Route::get('customers', [CustomerController::class,'index'])->name('customers.index');
 // Route::get('customer/create', [CustomerController::class,'create']);
 Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
 Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
@@ -85,3 +87,5 @@ Route::post('/payment-plan-feature/create', [PaymentPlanFeatureController::class
 Route::get('/payment-plan-feature/{feature}/edit', [PaymentPlanFeatureController::class, 'edit']);
 Route::put('/payment-plan-feature/{feature}', [PaymentPlanFeatureController::class, 'update']);
 Route::delete('/payment-plan-feature/{feature}', [PaymentPlanFeatureController::class, 'destroy']);
+
+

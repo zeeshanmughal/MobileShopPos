@@ -14,19 +14,21 @@ class CreateCustomerAddressesTable extends Migration
     public function up()
     {
         Schema::create('customer_addresses', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->uuid('customer_id');
+            $table->id();
+            $table->string('customer_id');
             $table->string('street_address')->nullable();
             $table->string('house_number')->nullable();
             $table->string('city')->nullable();
             $table->string('state')->nullable();
             $table->string('postcode')->nullable();
             $table->string('country')->nullable();
-
+            $table->string('location')->nullable();
             $table->timestamps();
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+            
 
         });
+
+       
     }
 
     /**

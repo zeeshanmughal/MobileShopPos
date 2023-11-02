@@ -14,8 +14,8 @@ class CreateCustomerAdditionalInformationTable extends Migration
     public function up()
     {
         Schema::create('customer_additional_information', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->uuid('customer_id');
+            $table->id();
+            $table->string('customer_id');
             $table->string('customer_id_type')->nullable();
             $table->string('id_number')->nullable();
             $table->string('driving_license')->nullable();
@@ -28,9 +28,10 @@ class CreateCustomerAdditionalInformationTable extends Migration
             $table->boolean('sms_notification')->default(0);
             $table->boolean('email_notification')->default(0);
             $table->timestamps();
-            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
 
         });
+
+      
     }
 
     /**

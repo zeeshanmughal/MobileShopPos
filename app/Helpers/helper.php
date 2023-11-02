@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Storage;
+
 if (!function_exists('admin_asset')) {
     function admin_asset($path)
     {
@@ -33,4 +35,20 @@ if (!function_exists('createSlug')) {
     }
 }
 
-?>
+if(!function_exists('saveImage')){
+     function saveImage($image, $folder)
+    {
+        $imageName = time() . '_' . $image->getClientOriginalName();
+        if (!Storage::exists('public/' . $folder)) {
+            Storage::makeDirectory('public/' . $folder);
+        }
+        $image->storeAs('public/' . $folder, $imageName);
+
+        $imagePath = 'storage/' . $folder . '/' . $imageName;
+
+        // Additional logic for storing in the database here
+        // For example, you can use Eloquent to save the path to the database
+
+        return $imagePath;
+    }
+}

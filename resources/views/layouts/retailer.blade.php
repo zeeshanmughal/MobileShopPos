@@ -50,7 +50,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Customer Components:</h6>
                         <a class="collapse-item" href="{{ route('customer.create') }}">Add Customer</a>
-                        <a class="collapse-item" href="#">Customers</a>
+                        <a class="collapse-item" href="{{ route("customers.index") }}">Customers</a>
                     </div>
                 </div>
             </li>
@@ -69,7 +69,7 @@
                 <div id="collapseWalkIn" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">WalkIn Customer Components:</h6>
-                        <a class="collapse-item" href="{{ route('walkin.create') }}">Add WalkIn Customer</a>
+                        <a class="collapse-item" href="{{ route('walkInByRetailer.create') }}">Add WalkIn Customer</a>
                         <a class="collapse-item" href="#">WalkIn Customers</a>
                     </div>
                 </div>
@@ -251,7 +251,7 @@
     </div>
 
   @include('retailer.partials.scripts')
-
+@stack('js')
 </body>
 
 </html>

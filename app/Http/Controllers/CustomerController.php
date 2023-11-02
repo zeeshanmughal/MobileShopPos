@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Ticket;
 use App\Models\Customer;
+use Endroid\QrCode\QrCode;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ServiceDetail;
 use App\Models\CustomerAddress;
+use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\CustomerAdditionalInformation;
@@ -16,6 +18,13 @@ use App\Models\CustomerAdditionalInformation;
 class CustomerController extends Controller
 {
     //
+
+    public function index(){
+        $customers = Customer::all();
+      
+
+        return view('retailer.customers', compact('customers'));
+    }
 
     public function create()
     {
@@ -36,6 +45,8 @@ class CustomerController extends Controller
             // Customer
 
             $customer = new Customer();
+            $customer->uuid = Str::uuid();
+            $customer->slug = createSlug($request->first_name.$request->last_name);
             $customer->customer_group = $request->customer_group;
             $customer->organization = $request->organization;
             $customer->first_name = $request->first_name;
@@ -45,7 +56,7 @@ class CustomerController extends Controller
             $customer->how_did_you_hear_us = $request->how_did_you_hear_us;
             $customer->network = $request->network;
             $customer->tax_class = $request->tax_class;
-            
+
             if ($request->customer_type == 'walk-in') {
 
                 $customer->walk_in_customer = 1;
@@ -61,6 +72,7 @@ class CustomerController extends Controller
             $customerAddress->state = $request->state;
             $customerAddress->postcode = $request->postcode;
             $customerAddress->country = $request->country;
+            $customerAddress->location = $request->location;
             $customerAddress->save();
 
             // Customer Additional Information
@@ -69,13 +81,29 @@ class CustomerController extends Controller
             $customerAdditionalInformation->customer_id_type = $request->customer_id_type;
             $customerAdditionalInformation->id_number = $request->id_number;
             $customerAdditionalInformation->driving_license = $request->driving_license;
-            $customerAdditionalInformation->image = $request->image;
-            $customerAdditionalInformation->contact_person_detail = $request->contact_person_detail;
+            $imagePath = saveImage($request->image, 'customer_images');
+            $customerAdditionalInformation->image = $imagePath;
+            $customerAdditionalInformation->contact_person_detail = $request->contact_person;
             $customerAdditionalInformation->contact_person_phone = $request->contact_person_phone;
             $customerAdditionalInformation->relation = $request->relation;
-            $customerAdditionalInformation->compliance_gdpr = $request->compliance_gdpr;
-            $customerAdditionalInformation->sms_notification = $request->sms_notification;
-            $customerAdditionalInformation->email_notification = $request->email_notification;
+            if($request->compliance_gdpr == 'yes'){
+                $customerAdditionalInformation->compliance_gdpr = 1;
+
+            }else{
+                $customerAdditionalInformation->compliance_gdpr = 0;
+            }
+            if($request->sms_notification == 'yes'){
+                $customerAdditionalInformation->sms_notification = 1;
+
+            }else{
+                $customerAdditionalInformation->sms_notification = 0;
+            }
+            if($request->email_notification == 'yes'){
+                $customerAdditionalInformation->email_notification = 1;
+
+            }else{
+                $customerAdditionalInformation->email_notification = 0;
+            }
             $customerAdditionalInformation->save();
 
             // Service Details
@@ -95,17 +123,16 @@ class CustomerController extends Controller
                 $serviceDetail->quantity = $request->quantity;
                 $serviceDetail->price = $request->price;
                 $serviceDetail->tax = $request->tax;
-                if($serviceDetail->save()){
+                if ($serviceDetail->save()) {
                     $ticket = new Ticket();
                     $ticket->ticket_id = Str::random(7);
                     $ticket->device = $serviceDetail->device;
-                    $ticket->customer_name = $customer->first_name.' '.$customer->lastname;
+                    $ticket->customer_name = $customer->first_name . ' ' . $customer->lastname;
                     $ticket->assigned_to = Auth::user()->uuid;
                     $ticket->ticket_status = $request->ticket_status;
                     $ticket->created_date = Carbon::now();
                     $ticket->due_date = $serviceDetail->pickup_time;
                     $ticket->select_criteria = $request->select_criteria;
-
                 }
             }
 
@@ -174,13 +201,44 @@ class CustomerController extends Controller
 
     public function searchCustomer(Request $request)
     {
-        $firstName = $request->input('first_name');
-        $lastName = $request->input('last_name');
+        $searchTerm = $request->search;
+        if ($searchTerm) {
+            $results = Customer::where('first_name', 'like', '%' . $searchTerm . '%')
+                                ->orWhere('last_name', 'like', '%' . $searchTerm . '%')->get();
 
-        $customers = Customer::where('first_name', 'like', '%' . $firstName . '%')
-            ->where('last_name', 'like', '%' . $lastName . '%')
-            ->get();
+            return response()->json($results);
+        }
 
-        return response()->json($customers);
+        return response()->json([]);
+    }
+
+
+    public function generateQRCode()
+    {
+        $base_path = base_path();
+        
+        $url = 'https://google.com.pk'; // Replace with your specific URL containing the form
+
+        // Create a QR code instance
+        $qrCode = new QrCode($url);
+
+        // Set any additional parameters if needed
+        // For example, $qrCode->setSize(300);
+
+        // Create a PNG writer
+        $writer = new PngWriter();
+
+        // Generate the QR code image
+        $result = $writer->write($qrCode);
+
+        // Set the response headers
+        header('Content-Type: image/png');
+
+        // Output the QR code image
+        echo $result->getString();
+    }
+
+    public function getWalkinCustomerForm(){
+        return view ('user.walkin_customer');
     }
 }
