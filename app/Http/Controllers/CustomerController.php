@@ -5,12 +5,10 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Ticket;
 use App\Models\Customer;
-use Endroid\QrCode\QrCode;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ServiceDetail;
 use App\Models\CustomerAddress;
-use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use App\Models\CustomerAdditionalInformation;
@@ -212,30 +210,19 @@ class CustomerController extends Controller
         return response()->json([]);
     }
 
+    public function fetchCustomerData(Request $request){
+        $customerId = $request->get('customerId');
+       
+        $customer = Customer::find($customerId);
+        return response()->json($customer);
+
+    }
+
 
     public function generateQRCode()
     {
-        $base_path = base_path();
-        
-        $url = 'https://google.com.pk'; // Replace with your specific URL containing the form
-
-        // Create a QR code instance
-        $qrCode = new QrCode($url);
-
-        // Set any additional parameters if needed
-        // For example, $qrCode->setSize(300);
-
-        // Create a PNG writer
-        $writer = new PngWriter();
-
-        // Generate the QR code image
-        $result = $writer->write($qrCode);
-
-        // Set the response headers
-        header('Content-Type: image/png');
-
-        // Output the QR code image
-        echo $result->getString();
+        $url = route('walkInByCustomer.create');
+        return view('user.qr_code',compact('url'));
     }
 
     public function getWalkinCustomerForm(){

@@ -8,13 +8,12 @@
           <div class="d-flex align-items-end row">
             <div class="col-sm-7">
               <div class="card-body">
-                <h5 class="card-title text-primary">Congratulations John! 🎉</h5>
+                <h5 class="card-title text-primary">Admin Dashboard! 🎉</h5>
                 <p class="mb-4">
-                  You have done <span class="fw-medium">72%</span> more sales today. Check your new badge in
-                  your profile.
+                  Welcome to the Admin Web Dashboard<span class="fw-medium"></span> Wr're excited to have you here.
                 </p>
 
-                <a href="javascript:;" class="btn btn-sm btn-outline-primary">View Badges</a>
+                {{-- <a href="javascript:;" class="btn btn-sm btn-outline-primary">View Badges</a> --}}
               </div>
             </div>
             <div class="col-sm-5 text-center text-sm-left">
@@ -36,13 +35,13 @@
             <div class="card">
               <div class="card-body">
                 <div class="card-title d-flex align-items-start justify-content-between">
-                  <div class="avatar flex-shrink-0">
+                  {{-- <div class="avatar flex-shrink-0">
                     <img
                       src="{{ admin_asset('img/icons/unicons/chart-success.png') }}"
                       alt="chart success"
                       class="rounded" />
-                  </div>
-                  <div class="dropdown">
+                  </div> --}}
+                  {{-- <div class="dropdown">
                     <button
                       class="btn p-0"
                       type="button"
@@ -56,11 +55,11 @@
                       <a class="dropdown-item" href="javascript:void(0);">View More</a>
                       <a class="dropdown-item" href="javascript:void(0);">Delete</a>
                     </div>
-                  </div>
+                  </div> --}}
                 </div>
-                <span class="fw-medium d-block mb-1">Profit</span>
-                <h3 class="card-title mb-2">$12,628</h3>
-                <small class="text-success fw-medium"><i class="bx bx-up-arrow-alt"></i> +72.80%</small>
+                <span class="fw-medium d-block mb-1 ">Total Users</span>
+                <h3 class="card-title mb-2">{{ $users }}</h3>
+                {{-- <small class="text-success fw-medium"><i class="bx bx-up-arrow-alt"></i> +72.80%</small> --}}
               </div>
             </div>
           </div>
@@ -68,13 +67,13 @@
             <div class="card">
               <div class="card-body">
                 <div class="card-title d-flex align-items-start justify-content-between">
-                  <div class="avatar flex-shrink-0">
+                  {{-- <div class="avatar flex-shrink-0">
                     <img
                       src="{{ admin_asset('img/icons/unicons/wallet-info.png') }}"
                       alt="Credit Card"
                       class="rounded" />
-                  </div>
-                  <div class="dropdown">
+                  </div> --}}
+                  {{-- <div class="dropdown">
                     <button
                       class="btn p-0"
                       type="button"
@@ -88,11 +87,11 @@
                       <a class="dropdown-item" href="javascript:void(0);">View More</a>
                       <a class="dropdown-item" href="javascript:void(0);">Delete</a>
                     </div>
-                  </div>
+                  </div> --}}
                 </div>
-                <span>Sales</span>
-                <h3 class="card-title text-nowrap mb-1">$4,679</h3>
-                <small class="text-success fw-medium"><i class="bx bx-up-arrow-alt"></i> +28.42%</small>
+                <span>Total Payment Plans</span>
+                <h3 class="card-title text-nowrap mb-1">{{ $payment_plans }}</h3>
+                {{-- <small class="text-success fw-medium"><i class="bx bx-up-arrow-alt"></i> +28.42%</small> --}}
               </div>
             </div>
           </div>
@@ -104,7 +103,7 @@
     <div class="row">
       <!-- Order Statistics -->
       <div class="col-md-6 col-lg-4 col-xl-4 order-0 mb-4">
-        <div class="card h-100">
+        {{-- <div class="card h-100">
           <div class="card-header d-flex align-items-center justify-content-between pb-0">
             <div class="card-title mb-0">
               <h5 class="m-0 me-2">Order Statistics</h5>
@@ -198,12 +197,12 @@
               </li>
             </ul>
           </div>
-        </div>
-      </div>
+        </div> --}}
+      </div> 
       <!--/ Order Statistics -->
 
       <!-- Expense Overview -->
-      <div class="col-md-6 col-lg-4 order-1 mb-4">
+      {{-- <div class="col-md-6 col-lg-4 order-1 mb-4">
         <div class="card h-100">
           <div class="card-header">
             <ul class="nav nav-pills" role="tablist">
@@ -259,11 +258,11 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> --}}
       <!--/ Expense Overview -->
 
       <!-- Transactions -->
-      <div class="col-md-6 col-lg-4 order-2 mb-4">
+      {{-- <div class="col-md-6 col-lg-4 order-2 mb-4">
         <div class="card h-100">
           <div class="card-header d-flex align-items-center justify-content-between">
             <h5 class="card-title m-0 me-2">Transactions</h5>
@@ -379,9 +378,9 @@
             </ul>
           </div>
         </div>
-      </div>
+      </div> --}}
       <!--/ Transactions -->
-    </div>
-  </div>
+     </div>
+   </div>
 
 @endsection

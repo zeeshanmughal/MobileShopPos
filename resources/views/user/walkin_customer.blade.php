@@ -311,17 +311,17 @@
                                                         <input type="text" name="" placeholder="" class="form-control" >
                                                     </div>
                                                     <a href="#" class="text-primary">GST Class</a>
-                                                </td>
+                                                </td>--}}
                                                 <td>
                                                     <button class="btn bg-gradient-primary text-white text-white font-12 p-1">Add Row</button>
-                                                </td> --}}
+                                                </td> 
                                               </tr>
                                             </tbody>
                                           </table>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-12 mt-3 font-14 service_details">
+                            {{-- <div class="col-md-12 mt-3 font-14 service_details">
                                 <div class="accordionExample4 p-0 form-wrap">
                                     <div class="accord-header px-3 py-2" id="heading4">
                                         <h4 class="mb-0 align-items-center">
@@ -357,10 +357,10 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                             <!-- --------- -->
                             
-                            <div class="col-md-12 mt-3 font-14 service_details">
+                            {{-- <div class="col-md-12 mt-3 font-14 service_details">
                                 <div class="accordionExample5 p-0 form-wrap">
                                     <div class="accord-header px-3 py-2" id="heading5">
                                         <h4 class="mb-0 align-items-center">
@@ -438,9 +438,16 @@
                                           </table>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
-                        
+                       
+                <div class="row mt-3">
+                    <div class="col-md-12 text-right">
+                        <button id="save" class="btn bg-gradient-primary text-white ">Save Customers</button>
+                        <button id="saveAndAdd" class="btn bg-gray-800 text-white ">Save & add another Customer</button>
+                        <button id="cancel" class="btn bg-gray-300 text-dark ">Cancel</button>
+                    </div>
+                </div>
                     </form>
                 </div>
                 <!-- /.container-fluid -->
@@ -452,7 +459,7 @@
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Your Website 2020</span>
+                        <span>Copyright &copy; Your Website 2023</span>
                     </div>
                 </div>
             </footer>

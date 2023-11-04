@@ -52,4 +52,11 @@ class TicketController extends Controller
 
         return response()->json(['message' => 'Ticket status updated successfully', 'ticket' => $ticket], 200);
     }
+
+
+    public function tickets(){
+        $tickets = Ticket::all();
+        
+        return view('retailer.tickets',compact('tickets'));
+    }
 }

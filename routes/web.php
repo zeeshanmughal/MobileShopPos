@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\ServiceDetailController;
 use App\Http\Controllers\Admin\PaymentPlanController;
 use App\Http\Controllers\Admin\PaymentPlanFeatureController;
+use App\Http\Controllers\TicketController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,7 +23,7 @@ use App\Http\Controllers\Admin\PaymentPlanFeatureController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('login');
 });
 
 Auth::routes();
@@ -42,6 +43,8 @@ Route::post('/customers', [CustomerController::class, 'store'])->name('customers
 Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
 Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
 Route::post('/search-customer', [CustomerController::class, 'searchCustomer'])->name('search.customer');
+Route::get('/fetch-customer', [CustomerController::class, 'fetchCustomerData'])->name('fetchCustomerData');
+
 // Team Members Routes
 Route::get('/team-members', [TeamMemberController::class, 'index'])->name('team-members.index');
 Route::get('/team-members/create', [TeamMemberController::class, 'create'])->name('team-members.create');
@@ -61,7 +64,7 @@ Route::put('/service-details/{service-detail}', [ServiceDetailController::class,
 Route::delete('/service-details/{service-detail}', [ServiceDetailController::class, 'destroy'])->name('service_detail.destroy');
 // Ticket Routes
 Route::put('/tickets/{id}/update-status', [TicketController::class, 'updateTicketStatus'])->name('tickets.updateStatus');
-
+Route::get('/tickets',[TicketController::class,'tickets'])->name('ticket.index');
 // Item Routes
 Route::get('/items', [ItemController::class, 'index'])->name('items.index');
 // Route::get('/items/create', [ItemController::class, 'create'])->name('items.create');
@@ -70,8 +73,17 @@ Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show')
 Route::get('/items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
 Route::put('/items/{item}', [ItemController::class, 'update'])->name('items.update');
 Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
+
+
+// Group routes for admin
+Route::group(['middleware' => 'admin'], function () {
 // Admin Routes
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+// Route to display all users
+Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');
+
+// Route to make a user active
+Route::post('/admin/user/make-active/{id}', [AdminController::class, 'makeUserActive'])->name('admin.user.makeActive');
 
 // Pyament Plan routes
 Route::get('/payment-plans', [PaymentPlanController::class, 'index'])->name('paymentPlans');
@@ -87,5 +99,8 @@ Route::post('/payment-plan-feature/create', [PaymentPlanFeatureController::class
 Route::get('/payment-plan-feature/{feature}/edit', [PaymentPlanFeatureController::class, 'edit']);
 Route::put('/payment-plan-feature/{feature}', [PaymentPlanFeatureController::class, 'update']);
 Route::delete('/payment-plan-feature/{feature}', [PaymentPlanFeatureController::class, 'destroy']);
+
+
+});
 
 

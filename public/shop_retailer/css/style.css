@@ -1,223 +1,237 @@
 .form-wrap{
-background: rgba(255,255,255,1);
-width: 100%;
-padding: 50px;
-margin: 0 auto;
-position: relative;
-border-radius: 10px;
-box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.15);
-}
-
-.form-group{
-margin-bottom: 16px;
-}
-.form-group > label{
-display: block;
-font-size: 18px;	
-color: #000;
-}
-.custom-control-label{
-color: #000;
-font-size: 16px;
-}
-.form-control{
-height: 41px;
-background: #ecf0f4;
-border-color: transparent;
-padding: 0 15px;
-font-size: 16px;
-transition: all 0.3s ease-in-out;
-}
-.form-control:focus{
-border-color: #00bcd9;
-box-shadow: 0px 0px 20px rgba(0, 0, 0, .1);
-}
-textarea.form-control{
-height: 160px;
-padding-top: 15px;
-resize: none;
-}
-
-.btn{
-padding: .657rem .75rem;
-font-size: 18px;
-letter-spacing: 0.050em;
-transition: all 0.3s ease-in-out;
-}
-
-.btn-primary {
-color: #fff;
-background-color: #00bcd9;
-border-color: #00bcd9;
-}
-
-.btn-primary:hover {
-color: #00bcd9;
-background-color: #ffffff;
-border-color: #00bcd9;
-box-shadow: 0px 0px 20px rgba(0, 0, 0, .1);
-}
-
-.btn-primary:focus, .btn-primary.focus {
-color: #00bcd9;
-background-color: #ffffff;
-border-color: #00bcd9;
-box-shadow: 0px 0px 20px rgba(0, 0, 0, .1);
-}
-
-.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
-.show > .btn-primary.dropdown-toggle {
-color: #00bcd9;
-background-color: #ffffff;
-border-color: #00bcd9;
-}
-
-.btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus,
-.show > .btn-primary.dropdown-toggle:focus {
-box-shadow: 0px 0px 20px rgba(0, 0, 0, .1);
-}
-.custom_field_box{
-    padding: 20px 0;
-    margin-bottom: 2rem;
-    text-align: center;
-    background-color: rgb(236, 236, 236);
-}
-.toggle_profile img {
-    width: 60px;
-}
-.service_details select , .service_details .form-control{
-    font-size: 13px;
-    padding: 1px;
-    height: 34px;
-}
-.service_details td {
-    padding: 12px 4px;
-}
-.form-control1:focus {
-    color: #475F7B;
-    background-color: #FFF;
-    border-color: #5A8DEE;
-    outline: 0;
-    box-shadow: 0 3px 8px 0 rgb(0 0 0 / 10%);
-}
-.intl-tel-input,
-.iti{
-  width: 100%;
-}
-.font-14{
-    font-size: 14px;
-}
-.font-12{
-    font-size: 12px;
-}
-
-.accord-header {
-    background: #5A8DEE;
-    padding: 7px;
-    border-radius: 9px 9px 0px 0px;
-}
-
-.example > .row {
-    margin-top: 2rem;
-    height: 5rem;
-    vertical-align: middle;
-    text-align: center;
-    border: 1px solid rgba(189,193,200,0.5);
-}
-.example > .row:first-of-type {
-    border: none;
-    height: auto;
-    text-align: left;
-}
-.btn-toggle {
-    margin: 0 4rem;
-    padding: 0;
+    background: rgba(255,255,255,1);
+    width: 100%;
+    padding: 50px;
+    margin: 0 auto;
     position: relative;
-    border: none;
-    height: 1.5rem;
-    width: 3rem;
-    border-radius: 1.5rem;
-    color: #6b7381;
-    background: #bdc1c8;
-}
-.btn-toggle:focus, .btn-toggle:focus.active, .btn-toggle.focus, .btn-toggle.focus.active {
-    outline: none;
-}
-.btn-toggle > .handle {
-    position: absolute;
-    top: 0.1875rem;
-    left: 0.1875rem;
-    width: 1.125rem;
-    height: 1.125rem;
-    border-radius: 1.125rem;
-    background: #fff;
-    transition: left .25s;
-}
-.btn-toggle.active {
-    transition: background-color .25s;
-}
-.btn-toggle.active > .handle {
-    left: 1.6875rem;
-    transition: left .25s;
-}
-.btn-toggle.active:before {
-    opacity: .5;
-}
-.btn-toggle.active:after {
-    opacity: 1;
-}
-.btn-toggle.btn-xs:before, .btn-toggle.btn-xs:after {
-    display: none;
-}
-.btn-toggle:before, .btn-toggle:after {
-    color: #6b7381;
-}
-.btn-toggle.active {
-    background-color: #5a8dee;
-}
-.btn-toggle.btn-xs {
-    margin: 0 0;
-    padding: 0;
-    position: relative;
-    border: none;
-    height: 1rem;
-    width: 2rem;
-    border-radius: 1rem;
-}
-.btn-toggle.btn-xs:focus, .btn-toggle.btn-xs:focus.active, .btn-toggle.btn-xs.focus, .btn-toggle.btn-xs.focus.active {
-    outline: none;
-}
-.btn-toggle.btn-xs > .handle {
-    position: absolute;
-    top: 0.125rem;
-    left: 0.125rem;
-    width: 0.75rem;
-    height: 0.75rem;
-    border-radius: 0.75rem;
-    background: #fff;
-    transition: left .25s;
-}
-.btn-toggle.btn-xs.active {
-    transition: background-color .25s;
-}
-.btn-toggle.btn-xs.active > .handle {
-    left: 1.125rem;
-    transition: left .25s;
-}
-.btn-toggle.btn-xs.active:before {
-    opacity: .5;
-}
-.btn-toggle.btn-xs.active:after {
-    opacity: 1;
-}
-.btn-toggle.btn-xs.btn-xs:before, .btn-toggle.btn-xs.btn-xs:after {
-    display: none;
-}
-.Picture_2 img{
-    max-width:80px;
-  }
-  .Picture_2 input[type=file] {
-    padding: 7px 13px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    .form-group{
+    margin-bottom: 16px;
+    }
+    .form-group > label{
+    display: block;
+    font-size: 18px;	
+    color: #000;
+    }
+    .custom-control-label{
+    color: #000;
+    font-size: 16px;
+    }
+    .form-control{
+    height: 41px;
     background: #ecf0f4;
-    height: 45px;
-}
+    border-color: transparent;
+    padding: 0 15px;
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+    }
+    .form-control:focus{
+    border-color: #00bcd9;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, .1);
+    }
+    textarea.form-control{
+    height: 160px;
+    padding-top: 15px;
+    resize: none;
+    }
+    
+    .btn{
+    padding: .657rem .75rem;
+    font-size: 18px;
+    letter-spacing: 0.050em;
+    transition: all 0.3s ease-in-out;
+    }
+    
+    .btn-primary {
+    color: #fff;
+    background-color: #00bcd9;
+    border-color: #00bcd9;
+    }
+    
+    .btn-primary:hover {
+    color: #00bcd9;
+    background-color: #ffffff;
+    border-color: #00bcd9;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, .1);
+    }
+    
+    .btn-primary:focus, .btn-primary.focus {
+    color: #00bcd9;
+    background-color: #ffffff;
+    border-color: #00bcd9;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, .1);
+    }
+    
+    .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
+    .show > .btn-primary.dropdown-toggle {
+    color: #00bcd9;
+    background-color: #ffffff;
+    border-color: #00bcd9;
+    }
+    
+    .btn-primary:not(:disabled):not(.disabled):active:focus, .btn-primary:not(:disabled):not(.disabled).active:focus,
+    .show > .btn-primary.dropdown-toggle:focus {
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, .1);
+    }
+    .custom_field_box{
+        padding: 20px 0;
+        margin-bottom: 2rem;
+        text-align: center;
+        background-color: rgb(236, 236, 236);
+    }
+    .toggle_profile img {
+        width: 60px;
+    }
+    .service_details select , .service_details .form-control{
+        font-size: 13px;
+        padding: 1px;
+        height: 34px;
+    }
+    .service_details td {
+        padding: 12px 4px;
+    }
+    .form-control1:focus {
+        color: #475F7B;
+        background-color: #FFF;
+        border-color: #5A8DEE;
+        outline: 0;
+        box-shadow: 0 3px 8px 0 rgb(0 0 0 / 10%);
+    }
+    .intl-tel-input,
+    .iti{
+      width: 100%;
+    }
+    .font-14{
+        font-size: 14px;
+    }
+    .font-12{
+        font-size: 12px;
+    }
+    
+    .accord-header {
+        background: #5A8DEE;
+        padding: 7px;
+        border-radius: 9px 9px 0px 0px;
+    }
+    
+    .example > .row {
+        margin-top: 2rem;
+        height: 5rem;
+        vertical-align: middle;
+        text-align: center;
+        border: 1px solid rgba(189,193,200,0.5);
+    }
+    .example > .row:first-of-type {
+        border: none;
+        height: auto;
+        text-align: left;
+    }
+    .btn-toggle {
+        margin: 0 4rem;
+        padding: 0;
+        position: relative;
+        border: none;
+        height: 1.5rem;
+        width: 3rem;
+        border-radius: 1.5rem;
+        color: #6b7381;
+        background: #bdc1c8;
+    }
+    .btn-toggle:focus, .btn-toggle:focus.active, .btn-toggle.focus, .btn-toggle.focus.active {
+        outline: none;
+    }
+    .btn-toggle > .handle {
+        position: absolute;
+        top: 0.1875rem;
+        left: 0.1875rem;
+        width: 1.125rem;
+        height: 1.125rem;
+        border-radius: 1.125rem;
+        background: #fff;
+        transition: left .25s;
+    }
+    .btn-toggle.active {
+        transition: background-color .25s;
+    }
+    .btn-toggle.active > .handle {
+        left: 1.6875rem;
+        transition: left .25s;
+    }
+    .btn-toggle.active:before {
+        opacity: .5;
+    }
+    .btn-toggle.active:after {
+        opacity: 1;
+    }
+    .btn-toggle.btn-xs:before, .btn-toggle.btn-xs:after {
+        display: none;
+    }
+    .btn-toggle:before, .btn-toggle:after {
+        color: #6b7381;
+    }
+    .btn-toggle.active {
+        background-color: #5a8dee;
+    }
+    .btn-toggle.btn-xs {
+        margin: 0 0;
+        padding: 0;
+        position: relative;
+        border: none;
+        height: 1rem;
+        width: 2rem;
+        border-radius: 1rem;
+    }
+    .btn-toggle.btn-xs:focus, .btn-toggle.btn-xs:focus.active, .btn-toggle.btn-xs.focus, .btn-toggle.btn-xs.focus.active {
+        outline: none;
+    }
+    .btn-toggle.btn-xs > .handle {
+        position: absolute;
+        top: 0.125rem;
+        left: 0.125rem;
+        width: 0.75rem;
+        height: 0.75rem;
+        border-radius: 0.75rem;
+        background: #fff;
+        transition: left .25s;
+    }
+    .btn-toggle.btn-xs.active {
+        transition: background-color .25s;
+    }
+    .btn-toggle.btn-xs.active > .handle {
+        left: 1.125rem;
+        transition: left .25s;
+    }
+    .btn-toggle.btn-xs.active:before {
+        opacity: .5;
+    }
+    .btn-toggle.btn-xs.active:after {
+        opacity: 1;
+    }
+    .btn-toggle.btn-xs.btn-xs:before, .btn-toggle.btn-xs.btn-xs:after {
+        display: none;
+    }
+    .Picture_2 img{
+        max-width:80px;
+      }
+      .Picture_2 input[type=file] {
+        padding: 7px 13px;
+        background: #e5e5e5;
+        height: 45px;
+    }
+    .form-group .greenbtn {
+        background: #268f26;
+        color: white;
+        border-radius: 38px;
+        width: auto;
+        text-align: center;
+    }
+    .form-group .greenbtn option {
+        background: #edecec;
+        color: rgb(19, 19, 19);
+        border-radius: 38px;
+        width: auto;
+        text-align: center;
+    }

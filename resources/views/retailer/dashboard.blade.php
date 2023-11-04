@@ -4,9 +4,9 @@
 
       <!-- Page Heading -->
       <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+        <h1 class="h3 mb-0 text-gray-800">Retailer Dashboard</h1>
+        {{-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> --}}
     </div>
 
     <!-- Content Row -->
@@ -19,8 +19,8 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Earnings (Monthly)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                Total Customers</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_customers }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -37,8 +37,8 @@
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Earnings (Annual)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                Total Walkin Cutomers</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_walkin }}</div>
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -54,11 +54,11 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
+                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Items
                             </div>
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ $total_items }}</div>
                                 </div>
                                 <div class="col">
                                     <div class="progress progress-sm mr-2">
@@ -100,7 +100,7 @@
 
     <div class="row">
 
-        <!-- Area Chart -->
+        {{-- <!-- Area Chart -->
         <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
                 <!-- Card Header - Dropdown -->
@@ -171,14 +171,14 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
     <!-- Content Row -->
     <div class="row">
 
         <!-- Content Column -->
-        <div class="col-lg-6 mb-4">
+        {{-- <div class="col-lg-6 mb-4">
 
             <!-- Project Card Example -->
             <div class="card shadow mb-4">
@@ -324,7 +324,7 @@
                 </div>
             </div>
 
-        </div>
+        </div> --}}
     </div>
     
 @endsection

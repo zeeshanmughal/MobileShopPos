@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
@@ -41,17 +42,15 @@ class LoginController extends Controller
     }
         
     protected function authenticated(Request $request, $user)
-    {   dd('here');
-        if ($user->status !== 'approved') {
-            auth()->logout();
-            return back()->with('warning', 'You can login once your account will be approved by authorities.');
+    {
+        if ($user->is_admin) {
+            return redirect()->route('admin.dashboard'); // Redirect to the admin dashboard route
+        } else if ($user->role === 'user' && $user->is_admin === 0) {
+            return redirect()->route('retailer.dashboard'); // Redirect to the retailer dashboard route
         }
-
-        if ($user->role === 'admin') {
-            return redirect()->route('admin.dashboard');
-        } else {
-            // return redirect()->route('user.dashboard');
-        }
-        return redirect()->intended($this->redirectPath());
+        else {
+            Auth::logout(); // Log out the user if not authenticated with the provided conditions
+            return redirect('/login'); // Redirect to the login page
+        }   
     }
 }

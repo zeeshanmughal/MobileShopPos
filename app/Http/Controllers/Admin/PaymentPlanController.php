@@ -11,7 +11,7 @@ class PaymentPlanController extends Controller
     //
     public function index()
     {
-        $paymentPlans = PaymentPlan::orderBy('created_at','desc')->get();
+        $paymentPlans = PaymentPlan::orderBy('created_at','asc')->get();
         return view('admin.payment_plans', compact('paymentPlans'));
     }
 
