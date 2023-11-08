@@ -17,13 +17,14 @@ class CreateItemsTable extends Migration
             $table->id();
             $table->string('item_name');
             $table->string('item_category');
-            $table->string('subcategory');
             $table->string('manufacturer');
             $table->string('device_model');
             $table->string('warranty');
             $table->string('imei');
             $table->string('condition');
             $table->string('physical_location');
+            $table->string('sub_category');
+
             $table->string('sku');
             $table->string('upc_code');
             $table->string('short_description');

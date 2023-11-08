@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
+use App\Models\ServiceDetail;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class TicketController extends Controller
 {
@@ -34,28 +37,42 @@ class TicketController extends Controller
         return view('your_view', compact('filteredRecords'));
     }
 
-    public function updateTicketStatus(Request $request, $id)
+    public function updateTicketStatus(Request $request)
     {
-        $ticket = Ticket::find($id);
+        $ticketId = $request->input('ticketId');
+        $status = $request->input('status');
+
+        $ticket = Ticket::where('id',$ticketId)->first();
 
         if (!$ticket) {
-            return response()->json(['message' => 'Ticket not found'], 404);
+            return response()->json(['status'=>'erro','message' => 'Ticket not found'], 404);
+            
         }
 
-        $status = $request->input('status');
 
         // Validate the input status if necessary
         // Add any other necessary validations
 
-        $ticket->status = $status;
-        $ticket->save();
-
-        return response()->json(['message' => 'Ticket status updated successfully', 'ticket' => $ticket], 200);
+        $ticket->ticket_status = $status;
+        if ($ticket->save()) {
+            $message = "Status Updated Successfully";
+            return response()->json(['status'=>'success','message' => $message], 200);
+        } else {
+            $message = "Failed to Update Status";
+            return response()->json(['status'=>'error','message' => $message], 500);
+        }
     }
 
 
     public function tickets(){
-        $tickets = Ticket::all();
+        $auth_user = Auth::user();
+        $tickets = Ticket::where('user_id', $auth_user->id)->get();
+        if(sizeof($tickets) > 0){
+            foreach($tickets as $t => $ticket){
+               $service_detail =  ServiceDetail::where('id', $ticket->service_detail_id)->first();
+               $ticket->service_detail = $service_detail;
+            }
+        }
         
         return view('retailer.tickets',compact('tickets'));
     }

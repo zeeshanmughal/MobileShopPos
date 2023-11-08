@@ -91,7 +91,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Item Components:</h6>
                         <a class="collapse-item" href="{{ route('item.create') }}">Add Item</a>
-                        <a class="collapse-item" href="#">Items</a>
+                        <a class="collapse-item" href="{{ route('items.index') }}">Items</a>
                     </div>
                 </div>
             </li>
@@ -109,6 +109,13 @@
                         <a class="collapse-item" href="{{ route('ticket.index') }}">Tickets</a>
                     </div>
                 </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="{{ route('qrcode.generate') }}" 
+                aria-expanded="true" aria-controls="collapseTickets">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>QrCode</span>
+            </a>
             </li>
 
             <!-- Divider -->

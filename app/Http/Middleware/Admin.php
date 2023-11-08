@@ -17,9 +17,13 @@ class Admin
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::check() && Auth::user()->is_admin && Auth::user()->role === 'admin'){
+        if (Auth::guard('admin')->user()) {
             return $next($request);
         }
-        return redirect()->route('login');
+        if ($request->ajax() || $request->wantsJson()) {
+            return response('Unauthorized.', 401);
+        } else {
+            return redirect(route('adminLogin'));
+        }
     }
 }

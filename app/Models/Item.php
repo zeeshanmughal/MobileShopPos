@@ -10,7 +10,7 @@ class Item extends Model
     use HasFactory;
 
     protected $fillable = [
-        'item_name', 'item_category', 'subcategory', 'manufacturer', 'device_model', 'warranty',
+        'item_name', 'item_category', 'sub_category', 'manufacturer', 'device_model', 'warranty',
         'imei', 'condition', 'physical_location', 'sku', 'upc_code', 'short_description', 'image'
     ];
 }

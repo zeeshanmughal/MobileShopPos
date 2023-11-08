@@ -79,8 +79,12 @@ class CustomerController extends Controller
             $customerAdditionalInformation->customer_id_type = $request->customer_id_type;
             $customerAdditionalInformation->id_number = $request->id_number;
             $customerAdditionalInformation->driving_license = $request->driving_license;
-            $imagePath = saveImage($request->image, 'customer_images');
+            if($request->image){
+                $imagePath = saveImage($request->image, 'customer_images');
             $customerAdditionalInformation->image = $imagePath;
+                // 
+
+            }
             $customerAdditionalInformation->contact_person_detail = $request->contact_person;
             $customerAdditionalInformation->contact_person_phone = $request->contact_person_phone;
             $customerAdditionalInformation->relation = $request->relation;
@@ -104,35 +108,7 @@ class CustomerController extends Controller
             }
             $customerAdditionalInformation->save();
 
-            // Service Details
-            if ($request->customer_type == 'walk-in') {
-
-                $serviceDetail = new ServiceDetail();
-                $serviceDetail->user_id = Auth::user()->uuid;
-                $serviceDetail->customer_id = $customer->id;
-                $serviceDetail->repair_category = $request->repair_category;
-                $serviceDetail->device = $request->device;
-                $serviceDetail->device_issue = $request->device_issue;
-                $serviceDetail->imei_or_serial = $request->imei_or_serial;
-                $serviceDetail->repair_status = $request->repair_status;
-                $serviceDetail->repair_time = $request->repair_time;
-                $serviceDetail->assigned_to = $request->assigned_to;
-                $serviceDetail->pickup_time = $request->pickup_time;
-                $serviceDetail->quantity = $request->quantity;
-                $serviceDetail->price = $request->price;
-                $serviceDetail->tax = $request->tax;
-                if ($serviceDetail->save()) {
-                    $ticket = new Ticket();
-                    $ticket->ticket_id = Str::random(7);
-                    $ticket->device = $serviceDetail->device;
-                    $ticket->customer_name = $customer->first_name . ' ' . $customer->lastname;
-                    $ticket->assigned_to = Auth::user()->uuid;
-                    $ticket->ticket_status = $request->ticket_status;
-                    $ticket->created_date = Carbon::now();
-                    $ticket->due_date = $serviceDetail->pickup_time;
-                    $ticket->select_criteria = $request->select_criteria;
-                }
-            }
+          
 
 
 
@@ -170,6 +146,8 @@ class CustomerController extends Controller
         $customerAddress->state = $request->state;
         $customerAddress->postcode = $request->postcode;
         $customerAddress->country = $request->country;
+        $customerAddress->location = $request->location;
+
         $customerAddress->save();
 
         $customerAdditionalInformation = CustomerAdditionalInformation::where('customer_id', $id)->first();

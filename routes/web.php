@@ -1,15 +1,18 @@
 <?php
 
+use App\Models\Customer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\RetailerController;
 use App\Http\Controllers\TeamMemberController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\ServiceDetailController;
+use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\PaymentPlanController;
 use App\Http\Controllers\Admin\PaymentPlanFeatureController;
-use App\Http\Controllers\TicketController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,28 +25,40 @@ use App\Http\Controllers\TicketController;
 |
 */
 
-Route::get('/', function () {
-    return redirect('login');
-});
-
+// Route::get('/', function () {
+//     return redirect('login');
+// });
+Route::redirect('/', '/login');
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/retailer/dashboard', [RetailerController::class, 'dashboard'])->name('retailer.dashboard');
-Route::get('customer/create', [RetailerController::class, 'customers'])->name('customer.create');
-Route::get('/walk-in-customer/create', [RetailerController::class, 'walkInByRetailer'])->name('walkInByRetailer.create');
-Route::get('/item/create', [RetailerController::class, 'items'])->name('item.create');
-Route::get('/walk-in-customer', [CustomerController::class,'getWalkinCustomerForm'])->name('walkInByCustomer.create');
-// Customers Routes
+Route::group(['middleware' => 'retailer.auth'], function () {
 
-Route::get('/qrcode', [CustomerController::class, 'generateQRCode'])->name('qrcode.generate');
-Route::get('customers', [CustomerController::class,'index'])->name('customers.index');
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::get('/retailer/dashboard', [RetailerController::class, 'dashboard'])->name('retailer.dashboard');
+    Route::get('/customer/create', [RetailerController::class, 'customers'])->name('customer.create');
+    Route::get('/walk-in-customer/create', [RetailerController::class, 'walkInByRetailer'])->name('walkInByRetailer.create');
+    Route::post('/walk-in-customer/service-details',[RetailerController::class,'serviceDetailStore'])->name('service-detail.store');
+    
+    
+    Route::get('/walk-in-customer', [CustomerController::class,'getWalkinCustomerForm'])->name('walkInByCustomer.create');
+    // Customers Routes
+    
+    Route::get('/qrcode', [CustomerController::class, 'generateQRCode'])->name('qrcode.generate');
+    Route::get('customers', [CustomerController::class,'index'])->name('customers.index');
+
+    Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
+    Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
+    Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
+    Route::post('/search-customer', [CustomerController::class, 'searchCustomer'])->name('search.customer');
+    Route::get('/fetch-customer', [CustomerController::class, 'fetchCustomerData'])->name('fetchCustomerData');
+
+    // Ticket Routes
+    Route::post('/tickets/update-status', [TicketController::class, 'updateTicketStatus'])->name('tickets.updateStatus');
+    Route::get('/tickets',[TicketController::class,'tickets'])->name('ticket.index');
+    });
+
 // Route::get('customer/create', [CustomerController::class,'create']);
-Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
-Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
-Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
-Route::post('/search-customer', [CustomerController::class, 'searchCustomer'])->name('search.customer');
-Route::get('/fetch-customer', [CustomerController::class, 'fetchCustomerData'])->name('fetchCustomerData');
+
 
 // Team Members Routes
 Route::get('/team-members', [TeamMemberController::class, 'index'])->name('team-members.index');
@@ -62,22 +77,27 @@ Route::get('/service-details/{service-detail}', [ServiceDetailController::class,
 Route::get('/service-details/{service-detail}/edit', [ServiceDetailController::class, 'edit'])->name('service_detail.edit');
 Route::put('/service-details/{service-detail}', [ServiceDetailController::class, 'update'])->name('service_detail.update');
 Route::delete('/service-details/{service-detail}', [ServiceDetailController::class, 'destroy'])->name('service_detail.destroy');
-// Ticket Routes
-Route::put('/tickets/{id}/update-status', [TicketController::class, 'updateTicketStatus'])->name('tickets.updateStatus');
-Route::get('/tickets',[TicketController::class,'tickets'])->name('ticket.index');
+
 // Item Routes
 Route::get('/items', [ItemController::class, 'index'])->name('items.index');
-// Route::get('/items/create', [ItemController::class, 'create'])->name('items.create');
-Route::post('/items', [ItemController::class, 'store'])->name('items.store');
-Route::get('/items/{item}', [ItemController::class, 'show'])->name('items.show');
-Route::get('/items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
-Route::put('/items/{item}', [ItemController::class, 'update'])->name('items.update');
-Route::delete('/items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
+Route::get('/item/create', [ItemController::class, 'create'])->name('item.create');
+Route::post('/item', [ItemController::class, 'store'])->name('item.store');
+Route::get('/item/{item}', [ItemController::class, 'show'])->name('item.show');
+Route::get('/item/{item}/edit', [ItemController::class, 'edit'])->name('item.edit');
+Route::put('/item/{item}', [ItemController::class, 'update'])->name('item.update');
+Route::delete('/item/{item}', [ItemController::class, 'destroy'])->name('item.destroy');
 
 
 // Group routes for admin
-Route::group(['middleware' => 'admin'], function () {
+Route::group(['prefix'=>'admin', 'namespace'=>'Admin'],function () {
+   Route::get('/login',[AdminAuthController::class, 'getLogin'])->name('adminLogin');
+   Route::post('/login', [AdminAuthController::class, 'postLogin'])->name('adminLoginPost');
+   Route::post('/logout', [AdminAuthController::class, 'adminLogout'])->name('admin.logout');
+});
+
 // Admin Routes
+Route::group(['middleware' => 'admin.auth'], function () {
+    
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 // Route to display all users
 Route::get('/admin/users', [AdminController::class, 'users'])->name('admin.users');

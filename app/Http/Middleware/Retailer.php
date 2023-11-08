@@ -17,9 +17,13 @@ class Retailer
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::check() && !Auth::user()->is_admin && Auth::user()->role === 'user' ){
+        if (Auth::user()) {
             return $next($request);
         }
-        return redirect()->route('login');
+        if ($request->ajax() || $request->wantsJson()) {
+            return response('Unauthorized.', 401);
+        } else {
+            return redirect(route('login'));
+        }
     }
 }
