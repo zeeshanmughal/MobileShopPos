@@ -81,6 +81,22 @@
                 </a>
             </li> --}}
 
+            
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePhones"
+                    aria-expanded="true" aria-controls="collapsePhones">
+                    <i class="fas fa-fw fa-cog"></i>
+                    <span>Phones</span>
+                </a>
+                <div id="collapsePhones" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                    <div class="bg-white py-2 collapse-inner rounded">
+                        <h6 class="collapse-header">Item Components:</h6>
+                        <a class="collapse-item" href="{{ route('phone_buy.create') }}">Phone Buy</a>
+                        <a class="collapse-item" href="{{ route('phone_sell.create') }}">Phone Sell</a>
+                    </div>
+                </div>
+            </li>
+
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseItems"
                     aria-expanded="true" aria-controls="collapseItems">

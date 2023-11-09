@@ -4,6 +4,7 @@ use App\Models\Customer;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\PhoneController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\RetailerController;
@@ -55,7 +56,17 @@ Route::group(['middleware' => 'retailer.auth'], function () {
     // Ticket Routes
     Route::post('/tickets/update-status', [TicketController::class, 'updateTicketStatus'])->name('tickets.updateStatus');
     Route::get('/tickets',[TicketController::class,'tickets'])->name('ticket.index');
-    });
+    
+
+    // Phone Buy and Sell
+    Route::get('/phone-buy',[PhoneController::class,'createPhoneBuy'])->name('phone_buy.create');
+    Route::post('/phone-buy',[PhoneController::class,'storePhoneBuy'])->name('phone_buy.store');
+    Route::get('/phone-list',[PhoneController::class,'phoneList'])->name('retailer.phones');
+
+    Route::get('/phone-sell',[PhoneController::class,'createPhoneSell'])->name('phone_sell.create');
+
+
+});
 
 // Route::get('customer/create', [CustomerController::class,'create']);
 
