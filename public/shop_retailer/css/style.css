@@ -20,6 +20,23 @@
     color: #000;
     font-size: 16px;
     }
+    button.f-14{
+        font-size: 14px;
+    }
+    
+    ul#myTab li {
+        width: 24.7%;
+    }
+    ul#myTab {
+        place-content: space-between;
+    }
+    .nav-tabs .nav-link.active {
+        color: white;
+        background-color: #375ece;
+    }    
+    ul#myTab li button{
+        width: 100%;
+    }
     .form-control{
     height: 41px;
     background: #ecf0f4;
