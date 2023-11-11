@@ -32,7 +32,7 @@ use App\Http\Controllers\Admin\PaymentPlanFeatureController;
 Route::redirect('/', '/login');
 Auth::routes();
 
-Route::group(['middleware' => 'retailer.auth'], function () {
+Route::group(['middleware' => ['retailer.auth']], function () {
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/retailer/dashboard', [RetailerController::class, 'dashboard'])->name('retailer.dashboard');
@@ -135,3 +135,8 @@ Route::delete('/payment-plan-feature/{feature}', [PaymentPlanFeatureController::
 });
 
 
+
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
