@@ -13,4 +13,9 @@ class ServiceDetail extends Model
         'repair_category', 'device', 'device_issue', 'imei_or_serial', 'repair_status', 'repair_time',
         'assigned_to', 'pickup_time', 'quantity', 'price', 'tax'
     ];
+
+    public function ticket()
+    {
+        return $this->hasOne(Ticket::class);
+    }
 }

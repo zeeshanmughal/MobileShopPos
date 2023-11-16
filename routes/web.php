@@ -56,7 +56,10 @@ Route::group(['middleware' => ['retailer.auth']], function () {
     // Ticket Routes
     Route::post('/tickets/update-status', [TicketController::class, 'updateTicketStatus'])->name('tickets.updateStatus');
     Route::get('/tickets',[TicketController::class,'tickets'])->name('ticket.index');
-    
+    Route::get('/search-tickets/{status?}', [TicketController::class,'searchTickets'])->name('search-tickets');
+    Route::get('/tickets/print-ticket/{ticketId}',[TicketController::class, 'printTicket'])->name('ticket.print');
+    Route::get('/print-label',[TicketController::class, 'printLable'])->name('label.print');
+
 
     // Phone Buy and Sell
     Route::get('/phone-buy',[PhoneController::class,'createPhoneBuy'])->name('phone_buy.create');
@@ -65,6 +68,14 @@ Route::group(['middleware' => ['retailer.auth']], function () {
 
     Route::get('/phone-sell',[PhoneController::class,'createPhoneSell'])->name('phone_sell.create');
 
+    Route::post('/device-issue/add',[CustomerController::class,'addNewIssue'])->name('issue.store');
+    
+    Route::get('/search-device-issues', [CustomerController::class,'searchDeviceIssues'])->name('device_issue.search');
+    Route::get('/device-issues', [CustomerController::class,'getDeviceIssues'])->name('device_issues');
+    Route::post('/device-issue', [CustomerController::class, 'storeOrUpdate'])->name('issueStoreOrUpdate');
+    Route::delete('/device-issue/{issue}', [CustomerController::class, 'destroy_issue'])->name('issue.destory');
+
+    
 
 });
 

@@ -134,6 +134,14 @@
             </a>
             </li>
 
+            <li class="nav-item">
+                <a class="nav-link " href="{{ route('device_issues') }}" 
+                aria-expanded="true" aria-controls="collapseTickets">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>Device Issues</span>
+            </a>
+            </li>
+
             <!-- Divider -->
             {{-- <hr class="sidebar-divider"> --}}
 

@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BillDetail;
 use Carbon\Carbon;
 use App\Models\Ticket;
 use Illuminate\Http\Request;
 use App\Models\ServiceDetail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-
+use PDF;
 class TicketController extends Controller
 {
     //
@@ -42,11 +43,10 @@ class TicketController extends Controller
         $ticketId = $request->input('ticketId');
         $status = $request->input('status');
 
-        $ticket = Ticket::where('id',$ticketId)->first();
+        $ticket = Ticket::where('id', $ticketId)->first();
 
         if (!$ticket) {
-            return response()->json(['status'=>'erro','message' => 'Ticket not found'], 404);
-            
+            return response()->json(['status' => 'erro', 'message' => 'Ticket not found'], 404);
         }
 
 
@@ -56,24 +56,104 @@ class TicketController extends Controller
         $ticket->ticket_status = $status;
         if ($ticket->save()) {
             $message = "Status Updated Successfully";
-            return response()->json(['status'=>'success','message' => $message], 200);
+            return response()->json(['status' => 'success', 'message' => $message], 200);
         } else {
             $message = "Failed to Update Status";
-            return response()->json(['status'=>'error','message' => $message], 500);
+            return response()->json(['status' => 'error', 'message' => $message], 500);
         }
     }
 
 
-    public function tickets(){
-        $auth_user = Auth::user();
-        $tickets = Ticket::where('user_id', $auth_user->id)->get();
-        if(sizeof($tickets) > 0){
-            foreach($tickets as $t => $ticket){
-               $service_detail =  ServiceDetail::where('id', $ticket->service_detail_id)->first();
-               $ticket->service_detail = $service_detail;
-            }
+    public function tickets()
+    {
+        $allTickets = Ticket::with('serviceDetail')->get();
+        $pendingTickets = Ticket::with('serviceDetail')->where('ticket_status', 'pending')->get();
+        $inProgressTickets = Ticket::with('serviceDetail')->where('ticket_status', 'in_progress')->get();
+        $completedTickets = Ticket::with('serviceDetail')->where('ticket_status', 'completed')->get();
+
+        return view('retailer.tickets.index', compact('allTickets', 'pendingTickets', 'inProgressTickets', 'completedTickets'));
+    }
+
+    public function searchTickets(Request $request, $status = 'all')
+    {
+        $searchQuery = $request->input('searchQuery');
+
+        $ticketsQuery = Ticket::query();
+
+        if ($searchQuery) {
+            $ticketsQuery->where(function ($query) use ($searchQuery) {
+                $query->where('ticket_id', 'like', '%' . $searchQuery . '%')
+                    ->orWhereHas('customer', function ($query) use ($searchQuery) {
+                        $query->where('first_name', 'like', '%' . $searchQuery . '%')
+                            ->orWhere('last_name', 'like', '%' . $searchQuery . '%');
+                    });
+            });
         }
-        
-        return view('retailer.tickets',compact('tickets'));
+
+
+        // Apply conditions based on status
+        if ($status !== 'all') {
+            $ticketsQuery->where('ticket_status', $status);
+        }
+
+        // Assuming you have a relationship between Ticket and Customer
+        $ticketsQuery->with('customer','serviceDetail');
+
+        // Get the final result
+        $tickets = $ticketsQuery->get();
+
+        return response()->json(['tickets' => $tickets]);
+    }
+
+    public function printTicket($ticketId){
+        if($ticketId){
+            $billDetails = BillDetail::where('ticket_id', $ticketId)->first();
+            $ticket = Ticket::where('id', $ticketId)->first();
+           if(!$billDetails){
+
+            return response()->json(['error' => 'Bill details not found.'], 404);
+
+           }else{
+            $pdf = PDF::loadView('retailer.print_bill', ['billDetails' => $billDetails]);
+            $pdfContent = $pdf->output();
+    
+            // Convert the PDF content to base64
+            $base64Pdf = base64_encode($pdfContent);
+    
+            // Return the base64-encoded PDF content in the response
+            return response()->json(['pdf' => $base64Pdf]);
+
+           }
+        }else{
+
+            return redirect()->back()->with('error','Error Occur! No Ticket Found');
+        }
+
+    }
+
+    public function printLabel($ticketId){
+        if($ticketId){
+            $billDetails = BillDetail::where('ticket_id', $ticketId)->first();
+            $ticket = Ticket::where('id', $ticketId)->first();
+           if(!$billDetails){
+
+            return response()->json(['error' => 'Bill details not found.'], 404);
+
+           }else{
+            $pdf = PDF::loadView('retailer.print_bill', ['billDetails' => $billDetails]);
+            $pdfContent = $pdf->output();
+    
+            // Convert the PDF content to base64
+            $base64Pdf = base64_encode($pdfContent);
+    
+            // Return the base64-encoded PDF content in the response
+            return response()->json(['pdf' => $base64Pdf]);
+
+           }
+        }else{
+
+            return redirect()->back()->with('error','Error Occur! No Ticket Found');
+        }
+
     }
 }
