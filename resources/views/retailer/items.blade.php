@@ -46,6 +46,11 @@
                         </td>
                     </tr>
                 @endforeach
+                @else
+                <tr>
+                    <td>No Item avaible
+                    </td>
+                 </tr>
             @endif
         </tbody>
     </table>

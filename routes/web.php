@@ -1,19 +1,29 @@
 <?php
 
+
 use App\Models\Customer;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\ItemController;
+use Illuminate\Support\Facades\Redirect;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\PhoneController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\RetailerController;
 use App\Http\Controllers\TeamMemberController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ServiceDetailController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\PaymentPlanController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use App\Http\Controllers\Admin\PaymentPlanFeatureController;
+use App\Http\Controllers\VerificationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,25 +39,41 @@ use App\Http\Controllers\Admin\PaymentPlanFeatureController;
 // Route::get('/', function () {
 //     return redirect('login');
 // });
+
+
+
+Route::middleware(['web'])->group(function () {
+    Route::get('/account/verify/{token}', [VerificationController::class, 'verifyAccount'])->name('user.verify');
+    Route::get('/qrcode', [CustomerController::class, 'generateQRCode'])->name('qrcode.generate');
+    Route::get('/walk-in-customer', [CustomerController::class,'getWalkinCustomerForm'])->name('walkInByCustomer.create');
+    Route::post('/walk-in-customer/service-details/store',[CustomerController::class,'walkInServiceDetailStore'])->name('walkInServiceDetail.store');
+    Route::get('/search-device-issues', [CustomerController::class,'searchDeviceIssues'])->name('device_issue.search');
+    Route::post('/device-issue/add',[CustomerController::class,'addNewIssue'])->name('issue.store'); 
+    Route::get('walkin-customer/ticket/{customer_id}',[CustomerController::class,'getTicketView'])->name('getWalkinCustomerTicketView');
+});
 Route::redirect('/', '/login');
 Auth::routes();
 
-Route::group(['middleware' => ['retailer.auth']], function () {
+// Route::post('post-registration', [RegisterController::class, 'postRegistration'])->name('register.post');
+
+
+Route::group(['middleware' => ['retailer.auth','is_verify_email']], function () {
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/retailer/dashboard', [RetailerController::class, 'dashboard'])->name('retailer.dashboard');
     Route::get('/customer/create', [RetailerController::class, 'customers'])->name('customer.create');
     Route::get('/walk-in-customer/create', [RetailerController::class, 'walkInByRetailer'])->name('walkInByRetailer.create');
     Route::post('/walk-in-customer/service-details',[RetailerController::class,'serviceDetailStore'])->name('service-detail.store');
+
     
     
-    Route::get('/walk-in-customer', [CustomerController::class,'getWalkinCustomerForm'])->name('walkInByCustomer.create');
     // Customers Routes
     
-    Route::get('/qrcode', [CustomerController::class, 'generateQRCode'])->name('qrcode.generate');
     Route::get('customers', [CustomerController::class,'index'])->name('customers.index');
 
     Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
+    Route::get('/customers/{id}', [CustomerController::class, 'edit'])->name('customers.edit');
+
     Route::put('/customers/{customer}', [CustomerController::class, 'update'])->name('customers.update');
     Route::delete('/customers/{customer}', [CustomerController::class, 'destroy'])->name('customers.destroy');
     Route::post('/search-customer', [CustomerController::class, 'searchCustomer'])->name('search.customer');
@@ -65,19 +91,28 @@ Route::group(['middleware' => ['retailer.auth']], function () {
     Route::get('/phone-buy',[PhoneController::class,'createPhoneBuy'])->name('phone_buy.create');
     Route::post('/phone-buy',[PhoneController::class,'storePhoneBuy'])->name('phone_buy.store');
     Route::get('/phone-list',[PhoneController::class,'phoneList'])->name('retailer.phones');
+    Route::match(['get','post'],'/search-phone', [PhoneController::class,'searchPhones'])->name('phone.search');
 
-    Route::get('/phone-sell',[PhoneController::class,'createPhoneSell'])->name('phone_sell.create');
+    Route::post('/sell-phone',[PhoneController::class,'sellPhoneStore'])->name('phone_sell.store');
 
-    Route::post('/device-issue/add',[CustomerController::class,'addNewIssue'])->name('issue.store');
     
-    Route::get('/search-device-issues', [CustomerController::class,'searchDeviceIssues'])->name('device_issue.search');
     Route::get('/device-issues', [CustomerController::class,'getDeviceIssues'])->name('device_issues');
     Route::post('/device-issue', [CustomerController::class, 'storeOrUpdate'])->name('issueStoreOrUpdate');
     Route::delete('/device-issue/{issue}', [CustomerController::class, 'destroy_issue'])->name('issue.destory');
 
     
+    Route::resource('/categories', CategoryController::class)->except(['show']);
 
+    Route::get('/subscribe', [SubscriptionController::class, 'showSubscriptionForm']);
+    // Route::post('/subscribe', [SubscriptionController::class, 'subscribe']);
+
+    Route::get('/subscribe/plans', [SubscriptionController::class, 'showSubscriptionPlans'])->name('subscriptionPlans.show');
+Route::post('/subscribe/{planId}', [SubscriptionController::class, 'subscribe'])->name('user.subscribe');
 });
+
+Route::get('sms/send', [CustomerController::class, 'sendSms']);
+
+Route::get('/send-email', [EmailController::class, 'sendEmail']);
 
 // Route::get('customer/create', [CustomerController::class,'create']);
 
@@ -148,6 +183,5 @@ Route::delete('/payment-plan-feature/{feature}', [PaymentPlanFeatureController::
 
 
 
-Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+

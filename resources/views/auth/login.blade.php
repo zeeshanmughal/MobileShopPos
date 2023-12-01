@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -8,6 +9,17 @@
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
+                    @if (session('info'))
+                    <div class="alert alert-info" role="alert">
+                        {{ session('info') }}
+                    </div>
+                @endif
+                    @if (session('error'))
+                    <div class="alert alert-danger" role="alert">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
 
@@ -51,6 +63,8 @@
                             </div>
                         </div>
 
+                        
+
                         <div class="row mb-0">
                             <div class="col-md-8 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
@@ -65,6 +79,21 @@
                             </div>
                         </div>
                     </form>
+
+                    {{-- @if (Route::has('verification.notice'))
+                        <div class="row mb-3">
+                            <div class="col-md-6 offset-md-4">
+                                <p>
+                                    {{ __('Did not receive the verification email?') }}
+                                    <form method="POST" action="{{ route('verification.send') }}">
+                                        @csrf
+                                        <button type="submit" class="btn btn-link p-0 m-0 align-baseline">{{ __('Resend verification email') }}</button>
+                                    </form>
+                                </p>
+                            </div>
+                        </div>
+                    @endif --}}
+                    
                 </div>
             </div>
         </div>

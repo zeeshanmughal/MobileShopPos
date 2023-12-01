@@ -16,17 +16,17 @@ class CreateCustomersTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->string('uuid');
-            $table->string('slug');
+            $table->string('slug')->nullable();
             $table->string('customer_group');
             $table->string('organization')->nullable();
             $table->string('first_name');
             $table->string('last_name')->nullable();
             $table->string('email')->nullable();
             $table->string('phone')->nullable();
-            $table->string('how_did_you_hear_us')->nullable();
-            $table->string('walk_in_customer')->default(0);
+            $table->boolean('walk_in_customer')->default(0);
             $table->string('network')->nullable();
             $table->string('tax_class')->nullable();
+            $table->string('driving_license')->nullable();
             $table->timestamps();
         });
     }

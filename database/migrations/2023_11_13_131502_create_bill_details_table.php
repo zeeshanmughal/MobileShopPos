@@ -15,11 +15,13 @@ class CreateBillDetailsTable extends Migration
     {
         Schema::create('bill_details', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id');
+            $table->string('user_id')->nullable();
             $table->string('customer_id');
             $table->string('service_detail_id');
+            $table->string('ticket_id')->nullable();
+
             $table->float('price')->default(0.00);
-            $table->integer('quantity')->default(1);
+            $table->integer('quantity')->default(1)->nullable();
             $table->float('tax')->default(0.00);
             $table->float('discount')->default(0.00);
             $table->float('total_paid')->default(0.00);

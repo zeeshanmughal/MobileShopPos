@@ -17,9 +17,11 @@ class CreateBuyPhonesTable extends Migration
             $table->id();
             $table->string('user_id');
             $table->string('customer_id');
+            $table->string('label_id');
             $table->string('device_model');
             $table->string('device_brand');
             $table->string('imei');
+            $table->string('status')->nullable();
             $table->string('buying_price');
             $table->string('sell_price');
             $table->timestamps();

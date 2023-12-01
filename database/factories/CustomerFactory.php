@@ -25,7 +25,6 @@ class CustomerFactory extends Factory
             'last_name' => $this->faker->optional()->lastName,
             'email' => $this->faker->optional()->safeEmail,
             'phone' => $this->faker->optional()->phoneNumber,
-            'how_did_you_hear_us' => $this->faker->optional()->sentence,
             'walk_in_customer' => $this->faker->boolean,
             'network' => $this->faker->optional()->word,
             'tax_class' => $this->faker->optional()->word,

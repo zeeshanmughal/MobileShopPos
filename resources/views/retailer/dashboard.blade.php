@@ -2,14 +2,36 @@
 
 @section('content')
 
-      <!-- Page Heading -->
-      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Retailer Dashboard</h1>
         {{-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                 class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> --}}
     </div>
 
     <!-- Content Row -->
+    <div class="row">
+        <div class="col-md-12">
+            @if (auth()->user()->subscribed('default'))
+                @if (auth()->user()->subscription('default')->trial_ends_at) 
+            
+                    <p>Next billing date: {{ auth()->user()->subscription('default')->trial_ends_at->format('M d, Y') }}</p>
+                    <p>Days left until expiration:
+                        {{ now()->diffInDays(auth()->user()->subscription('default')->trial_ends_at) }} <a href="{{ route('subscriptionPlans.show') }}"><strong class="ml-3">Click here to Subscribe </strong></a></p>
+                        
+                @else
+                    <p>Next billing date: Not available</p>
+                    <p>Days left until expiration: Not available <a href="{{ route('subscriptionPlans.show') }}"><strong class="ml-3">Click here to Subscribe</strong></a></p>
+                    
+                @endif
+                <!-- Access more subscription properties as needed -->
+            @else
+                <p>You are not subscribed. <a href="{{ route('subscriptionPlans.show') }}"><strong class="ml-3">Click here to Subscribe</strong></a></p>
+            @endif
+
+
+        </div>
+    </div>
     <div class="row">
 
         <!-- Earnings (Monthly) Card Example -->
@@ -62,9 +84,8 @@
                                 </div>
                                 <div class="col">
                                     <div class="progress progress-sm mr-2">
-                                        <div class="progress-bar bg-info" role="progressbar"
-                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                            aria-valuemax="100"></div>
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: 50%"
+                                            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
                                 </div>
                             </div>
@@ -326,5 +347,5 @@
 
         </div> --}}
     </div>
-    
+
 @endsection

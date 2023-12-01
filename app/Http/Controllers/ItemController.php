@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -16,7 +17,8 @@ class ItemController extends Controller
 
     public function create()
     {
-        return view('retailer.create_item');
+        $categories = Category::all();
+        return view('retailer.create_item',compact('categories'));
     }
 
     public function store(Request $request)

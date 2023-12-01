@@ -17,12 +17,11 @@ class CreateTicketsTable extends Migration
             $table->id();
             $table->string('ticket_id');
             $table->string('device');
-            $table->string('customer_name');
-            $table->string('assigned_to');
-            $table->string('ticket_status');
-            $table->date('created_date');
-            $table->date('due_date');
-            $table->string('select_criteria');
+            $table->string('assigned_to')->nullable();
+            $table->string('ticket_status')->default('pending');
+            $table->date('created_date')->nullable();
+            $table->date('due_date')->nullable();
+            $table->string('select_criteria')->nullable();
 
 
             $table->timestamps();

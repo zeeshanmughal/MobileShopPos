@@ -60,7 +60,7 @@
                     <span>WalkIn Customer</span>
                 </a>
             </li> --}}
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseWalkIn"
                     aria-expanded="true" aria-controls="collapseWalkIn">
                     <i class="fas fa-fw fa-cog"></i>
@@ -69,10 +69,17 @@
                 <div id="collapseWalkIn" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">WalkIn Customer Components:</h6>
-                        <a class="collapse-item" href="{{ route('walkInByRetailer.create') }}">Add WalkIn Customer</a>
-                        <a class="collapse-item" href="#">WalkIn Customers</a>
-                    </div>
+                        <a class="collapse-item" href="{{ route('walkInByRetailer.create') }}">WalkIn Customer</a>
+                        {{-- <a class="collapse-item" href="#">WalkIn Customers</a> --}}
+                    {{-- </div>
                 </div>
+            </li>  --}}
+            <li class="nav-item">
+                <a class="nav-link " href="{{ route('walkInByRetailer.create') }}" 
+                aria-expanded="true" aria-controls="collapseTickets">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>WalkIn Service detail </span>
+            </a>
             </li>
             {{-- <li class="nav-item">
                 <a class="nav-link" href="{{ route('retailer.items') }}">
@@ -92,9 +99,18 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Item Components:</h6>
                         <a class="collapse-item" href="{{ route('phone_buy.create') }}">Phone Buy</a>
-                        <a class="collapse-item" href="{{ route('phone_sell.create') }}">Phone Sell</a>
+                        <a class="collapse-item" href="{{ route('retailer.phones') }}">Phone Sell</a>
                     </div>
                 </div>
+            </li>
+
+            
+            <li class="nav-item">
+                <a class="nav-link " href="{{ url('/categories') }}" 
+                aria-expanded="true" aria-controls="collapseTickets">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>Categories</span>
+            </a>
             </li>
 
             <li class="nav-item">
@@ -139,6 +155,15 @@
                 aria-expanded="true" aria-controls="collapseTickets">
                 <i class="fas fa-fw fa-cog"></i>
                 <span>Device Issues</span>
+            </a>
+            </li>
+
+            
+            <li class="nav-item">
+                <a class="nav-link " href="{{ route('subscriptionPlans.show') }}" 
+                aria-expanded="true" aria-controls="collapseTickets">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>Subscription Plans</span>
             </a>
             </li>
 
@@ -297,6 +322,28 @@
     </div>
 
   @include('retailer.partials.scripts')
+  <script>
+       function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById('previewImage').src = e.target.result;
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+  </script>
+  <script>
+    setInterval(function () {
+        fetch('/refresh-csrf')
+            .then(response => response.json())
+            .then(data => {
+                document.querySelector('meta[name="csrf-token"]').setAttribute('content', data.csrf_token);
+            });
+    }, 1800000); // Refresh every 30 minutes (adjust as needed)
+</script>
 @stack('js')
 </body>
 

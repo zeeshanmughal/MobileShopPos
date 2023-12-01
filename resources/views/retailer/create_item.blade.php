@@ -52,11 +52,17 @@
                     <div class="form-group">
                         <label> Item Category </label>
                         <select id="dropdown" name="item_category" id="itemCategory" class="form-control">
-                            <option disabled selected value>Select</option>
-                            <option value="Individual" {{ (isset($item) && $item->item_category === 'category1') ? 'selected' : (old('item_category') === 'category1' ? 'selected' : '') }}>Student</option>
-                            <option value="preferNo" {{ (isset($item) && $item->item_category === 'category1') ? 'selected' : (old('item_category') === 'category1' ? 'selected' : '') }}>Prefer not to say</option>
-                            <option value="other" {{ (isset($item) && $item->item_category === 'category1') ? 'selected' : (old('item_category') === 'category1' ? 'selected' : '') }}>Other</option>
-                        </select>
+                            <option disabled selected value>Select Category</option>
+                            @if(sizeof($categories) > 0)
+                            @foreach($categories as $c => $cat)
+                            <option value="{{ $cat->name }}" {{ (isset($item) && $item->item_category === $cat->name) ? 'selected' : (old('item_category') === $cat->name ? 'selected' : '') }}>{{ $cat->name }}</option>
+
+                            @endforeach
+                            @else
+                            <option disabled >No category</option>
+
+                            @endif
+                        </select> 
                         @if ($errors->has('item_category'))
                         <span class="text-danger">{{ $errors->first('item_category') }}</span>
                         @endif
@@ -74,12 +80,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="subCategory">Sub Category</label>
-                        <select id="dropdown" name="sub_category" id="subCategory" class="form-control" >
-                            <option disabled selected value>Select</option>
-                            <option value="Individual" {{ (isset($item) && $item->sub_category === 'category1') ? 'selected' : (old('sub_category') === 'category1' ? 'selected' : '') }} >Student</option>
-                            <option value="preferNo" {{ (isset($item) && $item->sub_category === 'category1') ? 'selected' : (old('sub_category') === 'category1' ? 'selected' : '') }}>Prefer not to say</option>
-                            <option value="other" {{ (isset($item) && $item->sub_category === 'category1') ? 'selected' : (old('sub_category') === 'category1' ? 'selected' : '') }}>Other</option>
-                        </select>
+                       <input type="text" class="form-control" name="sub_category" id="subCategory">
                     </div>
                 </div>
                 <div class="col-md-6">

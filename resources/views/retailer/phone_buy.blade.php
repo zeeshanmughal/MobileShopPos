@@ -208,7 +208,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Device Model</label>
-                                    <input type="text" name="device_model" class="form-control" value="{{ old('device_model') }}">
+                                    <input type="text" name="device_model" id="deviceModel" class="form-control" value="{{ old('device_model') }}">
                                     @error('device_model')
                                        <span class="text-danger">{{$message}}</span>
                                     @enderror
@@ -217,7 +217,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Device Brand</label>
-                                    <input type="text" name="device_brand" class="form-control" value="{{ old('device_brand') }}">
+                                    <input type="text" name="device_brand" id="deviceBrand" class="form-control" value="{{ old('device_brand') }}">
                                     @error('device_brand')
                                        <span class="text-danger">{{$message}}</span>
                                     @enderror
@@ -226,7 +226,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Imei</label>
-                                    <input type="text" name="imei" class="form-control" value="{{ old('imei') }}">
+                                    <input type="text" name="imei" id="imei" class="form-control" value="{{ old('imei') }}">
                                     @error('imei')
                                        <span class="text-danger">{{$message}}</span>
                                     @enderror
@@ -235,7 +235,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Buying Price</label>
-                                    <input type="text" name="buying_price" class="form-control" value="{{ old('buying_price') }}">
+                                    <input type="text" name="buying_price" id="buyingPrice" class="form-control" value="{{ old('buying_price') }}">
                                     @error('buying_price')
                                        <span class="text-danger">{{$message}}</span>
                                     @enderror
@@ -244,13 +244,16 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">Selling Price</label>
-                                    <input type="text" name="selling_price" class="form-control" value="{{ old('selling_price') }}">
+                                    <input type="text" name="selling_price" id="sellingPrice" class="form-control" value="{{ old('selling_price') }}">
                                     @error('selling_price')
                                        <span class="text-danger">{{$message}}</span>
                                     @enderror
                                 </div>
                             </div>
-
+                          
+                        </div>
+                        <div class="d-flex justify-content-end mt-4 mr-4">
+                            <button type="button" id="printLabelBtn" class="btn btn-primary btn-sm" disabled>Print Label</button>
                         </div>
                     </div>
                 </div>
@@ -378,5 +381,80 @@
             emailInput.value = '1';
         }
     }
+    </script>
+    <script>
+            function checkFormFields() {
+        var deviceModel = document.getElementById('deviceModel').value.trim();
+        var deviceBrand = document.getElementById('deviceBrand').value.trim();
+        var imei = document.getElementById('imei').value.trim();
+
+
+        var sellPrice = document.getElementById('sellingPrice').value.trim();
+        var buyPrice = document.getElementById('buyingPrice').value.trim();
+
+
+        // Add more fields as needed
+
+        // Enable the button if all fields are filled
+        var printLabelBtn = document.getElementById('printLabelBtn');
+        printLabelBtn.disabled = !(deviceModel && sellPrice  && deviceBrand && buyPrice && imei/* && add more conditions as needed */);
+    }
+
+    // Attach the checkFormFields function to the input fields' change event
+    document.getElementById('deviceModel').addEventListener('input', checkFormFields);
+    document.getElementById('sellingPrice').addEventListener('input', checkFormFields);
+    document.getElementById('imei').addEventListener('input', checkFormFields);
+    document.getElementById('buyingPrice').addEventListener('input', checkFormFields);
+    document.getElementById('deviceBrand').addEventListener('input', checkFormFields);
+        function printLabel() {
+        var deviceModel = document.getElementById('deviceModel').value;
+        var deviceBrand = document.getElementById('deviceBrand').value;
+        var sellPrice = document.getElementById('sellingPrice').value;
+        var buyPrice = document.getElementById('buyingPrice').value;
+        var imei = document.getElementById('imei').value;
+
+        // Open a new tab
+        var printWindow = window.open('', '_blank');
+
+        // Write HTML content for the label
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Phone Label</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                    }
+                    .label {
+                        margin: 20px;
+                    }
+                    .label-item {
+                        margin-bottom: 10px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="label">
+                    <div class="label-item"><strong>Device Model:</strong> ${deviceModel}</div>
+                    <div class="label-item"><strong>Device Brand:</strong> ${deviceBrand}</div>
+                    <div class="label-item"><strong>Sell Price:</strong> ${sellPrice}</div>
+                    <div class="label-item"><strong>Buy Price:</strong> ${buyPrice}</div>
+                    <div class="label-item"><strong>IMEI:</strong> ${imei}</div>
+                </div>
+            </body>
+            </html>
+        `);
+
+        // Close the document
+        printWindow.document.close();
+
+        // Print the label
+        printWindow.print();
+    }
+
+
+
+// Attach the printLabel function to the "Print Label" button click event
+document.getElementById('printLabelBtn').addEventListener('click', printLabel);
     </script>
 @endpush

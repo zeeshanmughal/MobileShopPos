@@ -15,7 +15,7 @@ class AddCustomerAndUserToTicketsTable extends Migration
     {
         Schema::table('tickets', function (Blueprint $table) {
             //
-            $table->string('user_id');
+            $table->string('user_id')->nullable();
             $table->string('customer_id');
 
         });

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveCustomerNameFromTicketsTable extends Migration
+class RenameBuyPhonesTableToPhones extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,7 @@ class RemoveCustomerNameFromTicketsTable extends Migration
      */
     public function up()
     {
-        Schema::table('tickets', function (Blueprint $table) {
-            //
-            $table->dropColumn('customer_name');
-        });
+        Schema::rename('buy_phones', 'phones');
     }
 
     /**
@@ -26,9 +23,9 @@ class RemoveCustomerNameFromTicketsTable extends Migration
      */
     public function down()
     {
-        Schema::table('tickets', function (Blueprint $table) {
+        Schema::table('phones', function (Blueprint $table) {
             //
-            $table->string('customer_name');
+            Schema::rename('phones','buy_phones');
         });
     }
 }

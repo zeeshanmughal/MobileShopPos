@@ -14,6 +14,7 @@ use App\Models\CustomerAddress;
 use Illuminate\Support\Facades\Auth;
 use App\Models\CustomerAdditionalInformation;
 use App\Models\DeviceIssue;
+use App\Models\PaymentPlan;
 
 class RetailerController extends Controller
 {
@@ -22,6 +23,10 @@ class RetailerController extends Controller
         $total_customers = Customer::where('walk_in_customer',0)->count();
         $total_walkin = Customer::where('walk_in_customer',1)->count();
         $total_items = Item::count();
+
+        $paymentPlans = PaymentPlan::all();
+
+        
 
         return view('retailer.dashboard',compact('total_customers','total_walkin','total_items'));
     }

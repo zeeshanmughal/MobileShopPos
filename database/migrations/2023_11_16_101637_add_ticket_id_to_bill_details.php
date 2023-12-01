@@ -15,7 +15,7 @@ class AddTicketIdToBillDetails extends Migration
     {
         Schema::table('bill_details', function (Blueprint $table) {
             //
-            $table->string('ticket_id')->nullable();
+            // $table->string('ticket_id')->nullable();
         });
     }
 

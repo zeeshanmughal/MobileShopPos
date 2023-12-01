@@ -17,7 +17,7 @@
                         <tr>
                             <th>Plan Name</th>
                             <th>Plan Price</th>
-                            <th>Interval</th>
+                            <th>Interval Months</th>
                             <th>View Features</th>
                             <th>Edit</th>
                             <th>Delete</th>
@@ -33,7 +33,7 @@
                                         <span class="fw-medium">{{ $row->name }}</span>
                                     </td>
                                     <td>{{ '$ ' . $row->price }}</td>
-                                    <td>{{ Str::upper($row->interval) }}</td>
+                                    <td>{{ Str::upper($row->interval) .' Months' }}</td>
                                     @php
                                         $encodedId = base64_encode($row->id); // Encode the real ID
                                     @endphp
@@ -87,8 +87,8 @@
                             <input type="text" class="form-control" id="addPrice" name="price">
                         </div>
                         <div class="form-group">
-                            <label for="name">Interval</label>
-                            <input type="text" class="form-control" id="addInterval" name="interval">
+                            <label for="name">Package Duration (Months)</label>
+                            <input type="text" class="form-control" id="addInterval" name="interval" min="1">
                         </div>
                     </form>
                 </div>
@@ -122,8 +122,8 @@
                             <input type="text" class="form-control" id="price" name="price">
                         </div>
                         <div class="form-group">
-                            <label for="interval">Interval</label>
-                            <input type="text" class="form-control" id="interval" name="interval">
+                            <label for="interval">Package Duration (Months)</label>
+                            <input type="text" class="form-control" id="interval" name="interval" min="1">
                         </div>
                     </form>
                 </div>

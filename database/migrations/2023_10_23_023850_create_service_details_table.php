@@ -15,19 +15,19 @@ class CreateServiceDetailsTable extends Migration
     {
         Schema::create('service_details', function (Blueprint $table) {
             $table->id();
-            $table->string('user_id');
+            $table->string('user_id')->nullable();
             $table->string('customer_id');
-            $table->string('repair_category');
+            $table->string('repair_category')->nullable();
             $table->string('device');
             $table->string('device_issue');
             $table->string('imei_or_serial');
-            $table->string('repair_status');
-            $table->dateTime('repair_time');
-            $table->string('assigned_to');
-            $table->dateTime('pickup_time');
-            $table->integer('quantity');
-            $table->decimal('price', 8, 2);
-            $table->decimal('tax', 8, 2);
+            $table->string('repair_status')->default('pending');
+            $table->dateTime('repair_time')->nullable();
+            $table->string('assigned_to')->nullable();
+            $table->dateTime('pickup_time')->nullable();
+            $table->integer('quantity')->default(1);
+            $table->decimal('price', 8, 2)->nullable();
+            $table->decimal('tax', 8, 2)->nullable();
             $table->timestamps();
 
 

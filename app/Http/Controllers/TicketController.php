@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BillDetail;
+use PDF;
 use Carbon\Carbon;
 use App\Models\Ticket;
+use App\Jobs\SendEmailJob;
+use App\Models\BillDetail;
 use Illuminate\Http\Request;
 use App\Models\ServiceDetail;
+use App\Mail\AwaitingPartsEmail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
-use PDF;
+
 class TicketController extends Controller
 {
     //
@@ -42,20 +46,28 @@ class TicketController extends Controller
     {
         $ticketId = $request->input('ticketId');
         $status = $request->input('status');
+       
+
+      
 
         $ticket = Ticket::where('id', $ticketId)->first();
 
         if (!$ticket) {
-            return response()->json(['status' => 'erro', 'message' => 'Ticket not found'], 404);
+            return response()->json(['status' => 'error', 'message' => 'Ticket not found'], 404);
         }
 
 
         // Validate the input status if necessary
         // Add any other necessary validations
-
+        if($status == 'awaiting_collection'){
+            // Mail::to('zeeshan.wpdev@gmail.com')->send(new AwaitingPartsEmail($ticket));
+            SendEmailJob::dispatch('zeeshan.wpdev@gmail.com', new AwaitingPartsEmail($ticket))->onQueue('emails');
+        }
+       
         $ticket->ticket_status = $status;
         if ($ticket->save()) {
             $message = "Status Updated Successfully";
+         
             return response()->json(['status' => 'success', 'message' => $message], 200);
         } else {
             $message = "Failed to Update Status";

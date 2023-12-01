@@ -122,23 +122,25 @@
                 type: 'GET',
                 success: function(response) {
                     if (response.error) {
-            // Redirect back with an error message
-            alert('Error: ' + response.error);
-            window.location.href = '/tickets'; // Replace with your actual URL
-        } else {
-            // Check if the PDF content is present
-            if (response.pdf) {
-                // Open a new window with the PDF
-                var newWindow = window.open();
-                newWindow.document.write('<embed width="100%" height="100%" name="plugin" src="data:application/pdf;base64,' + response.pdf + '" type="application/pdf" />');
+                        // Redirect back with an error message
+                        alert('Error: ' + response.error);
+                        window.location.href = '/tickets'; // Replace with your actual URL
+                    } else {
+                        // Check if the PDF content is present
+                        if (response.pdf) {
+                            // Open a new window with the PDF
+                            var newWindow = window.open();
+                            newWindow.document.write(
+                                '<embed width="100%" height="100%" name="plugin" src="data:application/pdf;base64,' +
+                                response.pdf + '" type="application/pdf" />');
 
-                // Optional: You can close the new window after viewing
-                // newWindow.close();
-            } else {
-                // Handle the case when PDF content is undefined or not present
-                alert('Error: PDF content is missing in the response.');
-            }
-        }
+                            // Optional: You can close the new window after viewing
+                            // newWindow.close();
+                        } else {
+                            // Handle the case when PDF content is undefined or not present
+                            alert('Error: PDF content is missing in the response.');
+                        }
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error('AJAX Error:', status, error);
@@ -284,13 +286,26 @@
                         'No Repair Category') + '</td>';
                     html += '<td><button class="pending btn text-white py-1 f-14 bg-gradient-warning">' +
                         capitalizeFirstLetter(replaceUnderscore(ticket.ticket_status)) + '</button></td>';
-                    html +=
-                        '<td><div class="form-group"><select id="dropdown" name="role" class="form-control" onchange="changeStatus(this.value, ' +
-                        ticket.id + ')"><option value="pending" ' + (ticket.ticket_status == 'pending' ?
-                            'selected' : '') + '>Pending</option><option value="in_progress" ' + (ticket
-                            .ticket_status == 'in_progress' ? 'selected' : '') +
-                        '>In Progress</option><option value="completed" ' + (ticket.ticket_status ==
-                            'completed' ? 'selected' : '') + '>Completed</option></select></div></td>';
+                    html += '<td>' +
+                        '<div class="form-group">' +
+                        '<select id="dropdown" name="role" class="form-control" onchange="changeStatus(this.value, ' +
+                        ticket.id + ')">' +
+                        '<option value="in_progress" ' + (ticket.ticket_status == 'in_progress' ?
+                            'selected' : '') + '>In Progress</option>' +
+                        '<option value="awaiting_collection" ' + (ticket.ticket_status ==
+                            'awaiting_collection' ? 'selected' : '') +
+                        '>Awaiting Collection (send sms or email)</option>' +
+                        '<option value="awaiting_parts" ' + (ticket.ticket_status == 'awaiting_parts' ?
+                            'selected' : '') + '>Awaiting for parts</option>' +
+                        '<option value="dispatch" ' + (ticket.ticket_status == 'dispatch' ? 'selected' :
+                        '') + '>Dispatch to repair center</option>' +
+                        '<option value="completed" ' + (ticket.ticket_status == 'completed' ? 'selected' :
+                            '') + '>Completed</option>' +
+                        '<option value="canceled" ' + (ticket.ticket_status == 'canceled' ? 'selected' :
+                        '') + '>Canceled</option>' +
+                        '</select>' +
+                        '</div>' +
+                        '</td>';
 
                     // Print Ticket Button
                     html += '<td><button class="btn btn-sm btn-primary" onclick="printTicket(\'' + ticket
