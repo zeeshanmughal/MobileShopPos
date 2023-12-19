@@ -20,7 +20,7 @@ class PaymentPlan extends Model
         });
     }
     
-    protected $fillable = ['name','price','slug','interval'];
+    protected $fillable = ['name','price','slug','interval','stripe_price_id'];
     public function features()
     {
         return $this->hasMany(PaymentPlanFeature::class, 'payment_plan_id', 'id');

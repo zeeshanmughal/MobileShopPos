@@ -47,6 +47,23 @@
                             </div>
 
                             <div class="row mb-3">
+                                <label for="phone"
+                                    class="col-md-4 col-form-label text-md-end">{{ __('Phone') }}</label>
+
+                                <div class="col-md-6">
+                                    <input id="phone" type="tel"
+                                        class="form-control @error('phone') is-invalid @enderror" name="phone"
+                                        value="{{ old('phone') }}" required autocomplete="phone">
+
+                                    @error('phone')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
                                 <label for="password"
                                     class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
 
@@ -73,6 +90,39 @@
                                 </div>
                             </div>
 
+                            <div class="row mb-3">
+                                <label for="businessName"
+                                    class="col-md-4 col-form-label text-md-end">{{ __('Business Name') }}</label>
+
+                                <div class="col-md-6">
+                                    <input id="businessName" type="text"
+                                        class="form-control @error('business_name') is-invalid @enderror" name="business_name"
+                                        value="{{ old('business_name') }}" required autocomplete="business_name">
+
+                                    @error('business_name')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <label for="businessWebsite"
+                                    class="col-md-4 col-form-label text-md-end">{{ __('Business Website') }}</label>
+
+                                <div class="col-md-6">
+                                    <input id="businessWebsite" type="text"
+                                        class="form-control @error('business_website') is-invalid @enderror" name="business_website"
+                                        value="{{ old('business_website') }}"  autocomplete="business_website">
+
+                                    @error('business_website')
+                                        <span class="invalid-feedback" role="alert">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
+                                </div>
+                            </div>
                             <div class="row mb-0">
                                 <div class="col-md-6 offset-md-4">
                                     <button type="submit" class="btn btn-primary">

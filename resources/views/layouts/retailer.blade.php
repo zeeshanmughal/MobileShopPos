@@ -4,6 +4,29 @@
 <head>
 
  @include('retailer.partials.head')
+ <style>
+    .alert {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.alert-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.alert-danger {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+.error-message {
+    color: red;
+}
+ </style>
 @stack('styles')
 </head>
 
@@ -40,7 +63,7 @@
                     <span>Customers</span>
                 </a>
             </li> --}}
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCustomer"
                     aria-expanded="true" aria-controls="collapseCustomer">
                     <i class="fas fa-fw fa-cog"></i>
@@ -53,6 +76,14 @@
                         <a class="collapse-item" href="{{ route("customers.index") }}">Customers</a>
                     </div>
                 </div>
+            </li> --}}
+
+            <li class="nav-item">
+                <a class="nav-link " href="{{ route('customers.index') }}" 
+                aria-expanded="true" aria-controls="collapseTickets">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>Customers</span>
+            </a>
             </li>
             {{-- <li class="nav-item">
                 <a class="nav-link" href="{{ route('retailer.walkin') }}">
@@ -323,17 +354,48 @@
 
   @include('retailer.partials.scripts')
   <script>
-       function readURL(input) {
+       function readURL(input, previewId) {
         if (input.files && input.files[0]) {
-            var reader = new FileReader();
-
+            const reader = new FileReader();
             reader.onload = function (e) {
-                document.getElementById('previewImage').src = e.target.result;
+                document.getElementById(previewId).src = e.target.result;
             };
-
             reader.readAsDataURL(input.files[0]);
         }
     }
+        // if (cameraPreview.srcObject) {
+        //     cameraPreview.srcObject.getTracks().forEach(track => track.stop());
+        // }
+    
+  </script>
+  <script>
+  document.addEventListener("DOMContentLoaded", function() {
+        
+        var countryCodeInput = document.getElementById('countryCode');
+
+            Inputmask(countryCode + ' 9999 999999').mask(document.getElementById('mobilePhone'));
+
+            Inputmask({
+                mask: '+999',
+                placeholder: '',
+                definitions: {
+                    '9': {
+                        validator: '[0-9]',
+                        cardinality: 1
+                    }
+                }
+            }).mask(countryCodeInput);
+
+         
+
+            // Attach an event listener to update the mask when the country code changes
+            countryCodeInput.addEventListener('input', function() {
+                Inputmask(' 9999 999999').mask(document.getElementById(
+                    'mobilePhone'));
+            });
+
+              
+    })
   </script>
   <script>
     setInterval(function () {

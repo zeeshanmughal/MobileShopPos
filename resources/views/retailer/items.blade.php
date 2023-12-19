@@ -27,10 +27,10 @@
                         <td>{{ $item->manufacturer }}</td>
                         <td>{{ $item->warranty }}</td>
                         <td>
-                            <a  data-item-id="{{ $item->id }}" class="btn btn-primary view-item "  style="font-size: 12px;">
+                            <a  data-item-id="{{ $item->id }}" class="btn btn-primary view-item " data-toggle="tooltip" title="View Item" style="font-size: 12px;">
                                 <i class="fas fa-eye"></i>
                             </a>
-                            <a href="{{ route('item.edit', $item->id) }}" class="btn btn-success" style="font-size: 12px;">
+                            <a href="{{ route('item.edit', $item->id) }}" class="btn btn-success"  data-toggle="tooltip" title="Edit Item" style="font-size: 12px;">
                                 <i class="fas fa-edit"></i>
                             </a>
                             <form action="{{ route('item.destroy', $item->id) }}" method="post"
@@ -39,7 +39,7 @@
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger"
                                     onclick="return confirm('Are you sure you want to delete this item?')"
-                                    style="font-size: 12px;">
+                                    style="font-size: 12px;"  data-toggle="tooltip" title="Delete Item">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </form>
@@ -67,8 +67,8 @@
             <div class="modal-body">
                 <div  id="itemDetails">
                     <!-- Item details will be displayed here -->
-                    <p><strong>Item ID:</strong> <span id="itemID"></span></p>
-                    <p><strong>Item Name:</strong> <span id="itemName"></span></p>
+                    {{-- <p><strong>Item ID:</strong> <span id="itemID"></span></p> --}}
+
                 </div>
                 
             </div>
@@ -96,20 +96,16 @@
                 console.log(data);
                 var itemDetails = data;
                 console.log('item----detail----',itemDetails);
+                var imageUrl = window.location.origin.'/public/'.${itemDetails.image}
                 var detailsHTML = `
+                <p>SKU: ${itemDetails.sku}</p>
                     <p>Item Name: ${itemDetails.item_name}</p>
                     <p>Item Category: ${itemDetails.item_category}</p>
-                    <p>SKU: ${itemDetails.sku}</p>
                     <p>Item Category: ${itemDetails.item_category}</p>
                     <p>Manufacturer: ${itemDetails.manufacturer}</p>
-                    <p>Device Model: ${itemDetails.device_model}</p>
-                    <p>Warranty: ${itemDetails.warranty}</p>
-                    <p>Imei: ${itemDetails.imei}</p>
-                    <p>Condition: ${itemDetails.condition}</p>
-                    <p>Physical Location: ${itemDetails.physical_location}</p>
                     <p>Sub Category: ${itemDetails.sub_category}</p>
                     <p>Short Description: ${itemDetails.short_description}</p>
-                    <img src="${itemDetails.image}" alt="Item Image" style="max-width: 100px; max-height: 100px;">
+                    <img src="${imageUrl}" alt="Item Image" style="max-width: 100px; max-height: 100px;">
 
                 `;
                 $('#itemDetails').html(detailsHTML);

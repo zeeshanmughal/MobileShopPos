@@ -68,82 +68,35 @@
                         @endif
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="form-group Picture_2">
-                         <label for="">Picture (2MB)</label>
-                            <div class="d-flex">
-                              <img id="" src="http://placehold.it/180" class="blah mr-1" alt="your image" />
-                              <input type='file'  name="image" class="form-control " onchange="readURL(this);" />
-                         </div>
-                     </div>
-                </div>
+         
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="subCategory">Sub Category</label>
-                       <input type="text" class="form-control" name="sub_category" id="subCategory">
+                       <input type="text" class="form-control" name="sub_category" id="subCategory" value="{{isset($item) ?  $item->sub_category : old('sub_category') }}">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Manufacturer</label>
-                        <select id="dropdown" name="manufacturer" id="manufacturer" class="form-control" >
-                            <option disabled selected value>Select Option</option>
-                            <option value="student" {{ (isset($item) && $item->manufacturer === 'category1') ? 'selected' : (old('manufacturer') === 'category1' ? 'selected' : '') }}>Student</option>
-                            <option value="job" {{ (isset($item) && $item->manufacturer === 'category1') ? 'selected' : (old('manufacturer') === 'category1' ? 'selected' : '') }}>Full Time Job</option>
-                            <option value="other" {{ (isset($item) && $item->manufacturer === 'category1') ? 'selected' : (old('manufacturer') === 'category1' ? 'selected' : '') }} >Other</option>
-                        </select>
+                        <input type="text" name="manufacturer" id="manufacturer" class="form-control" value="{{isset($item) ?  $item->manufacturer : old('manufacturer') }}">
+                     
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="">Device Model</label>
-                        <input type="text" name="device_model" id="deviceModel" class="form-control" value="{{isset($item) ?  $item->device_model : old('device_model') }}" >
-                    </div>
+                    <div class="form-group Picture_2">
+                         <label for="">Picture (2MB)</label>
+                            <div class="d-flex">
+                                @if(isset($item) && $item->image)
+                                <img id="previewItemImage" src="{{ asset($item->image) }}" class="blah mr-1" alt="your image" />
+                                @else
+                              <img id="previewItemImage" src="http://placehold.it/180" class="blah mr-1" alt="your image" />
+                              @endif
+                              <input type='file'  name="image" class="form-control" onchange="readURL(this,'previewItemImage');" />
+                         </div>
+                     </div>
                 </div>
-                <div class="col-md-12 my-4">
-                    <strong class="text-danger">+ Add More Info</strong>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="warranty">Warranty</label>
-                        <input type="text" name="warranty" id="warranty" class="form-control" value="{{isset($item) ?  $item->warranty : old('warranty') }}">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="">IMEI</label>
-                        <input type="text" name="imei" placeholder="Enter IMEI Code" class="form-control" value="{{isset($item) ?  $item->imei : old('imei') }}">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="">Condition</label>
-                        <select id="dropdown" name="condition" id="condition" class="form-control" >
-                            <option disabled selected value>Select</option>
-                            <option value="Individual" {{ (isset($item) && $item->condition === 'category1') ? 'selected' : (old('condition') === 'category1' ? 'selected' : '') }}>Student</option>
-                            <option value="preferNo" {{ (isset($item) && $item->condition === 'category1') ? 'selected' : (old('condition') === 'category1' ? 'selected' : '') }}>Prefer not to say</option>
-                            <option value="other" {{ (isset($item) && $item->condition === 'category1') ? 'selected' : (old('condition') === 'category1' ? 'selected' : '') }}>Other</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="">Physical Location</label>
-                        <select id="dropdown" name="physical_location" id="physicalLocation" class="form-control" >
-                            <option disabled selected value>Select</option>
-                            <option value="Individual"  {{ (isset($item) && $item->physical_location === 'category1') ? 'selected' : (old('physical_location') === 'category1' ? 'selected' : '')  }}>Student</option>
-                            <option value="preferNo"  {{ (isset($item) && $item->physical_location === 'category1') ? 'selected' : (old('physical_location') === 'category1' ? 'selected' : '')  }}>Prefer not to say</option>
-                            <option value="other"  {{ (isset($item) && $item->physical_location === 'category1') ? 'selected' : (old('physical_location') === 'category1' ? 'selected' : '')  }}>Other</option>
-                        </select>
-                    </div>
-                </div>
-              
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="upcCode">UPC Code</label>
-                        <input type="text" name="upc_code" id="upcCode" class="form-control" value="{{isset($item) ?  $item->upc_code : old('upc_code') }}">
-                    </div>
-                </div>
+               
+            
             </div>
         </form>
     </div>	

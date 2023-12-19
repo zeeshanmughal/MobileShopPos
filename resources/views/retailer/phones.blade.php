@@ -1,16 +1,6 @@
 @extends('layouts.retailer')
 @section('content')
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if (session('error'))
-        <div class="alert alert-danger">
-            {{ session('error') }}
-        </div>
-    @endif
+    @include('retailer.partials.response_message')
 
     <div class="container">
         <div class="row justify-content-end">
@@ -18,7 +8,7 @@
                 @csrf
                 <div class="row mb-5">
                     <div class="col-md-8">
-                        <label for="phoneModel" style="display: inline-block;">Phone Label/Model:</label>
+                        <label for="phoneModel" style="display: inline-block;"><strong>Phone Label/Model:</strong></label>
                         <input type="text" name="search_input" class="form-control"
                             value="{{ isset($searchInput) ? $searchInput : '' }}" style="display: inline-block;">
                     </div>
@@ -35,7 +25,7 @@
     <div class="card" id="phoneDetailCard" style="display: none;">
         <div class="card-body">
             <h4 class="card-title"><strong> Phone Details</strong></h4>
-            <form id="phoneSellForm"  method="POST" action="{{ route('phone_sell.store') }}">
+            <form id="phoneSellForm" method="POST" action="{{ route('phone_sell.store') }}">
                 @csrf
                 <input type="hidden" name="phone_id" id="phoneId">
                 <div class="row">
@@ -87,9 +77,11 @@
 
                 </div>
                 <div class="row justify-content-end mr-4">
-                    <a href="#" class="btn btn-primary" id="payByCashBtn">Pay By Cash</a>
-                    <div></div>
-                    <a href="#" class="btn btn-primary" id="payByCardBtn">Pay By Card</a>
+                    <a href="#" class="btn btn-secondary btn-sm mr-3" id="payByCashBtn">Pay By Cash</a>
+
+                    <a href="#" class="btn btn-primary btn-sm mr-3" id="payByCardBtn">Pay By Card</a>
+                    <a href="#" class="btn btn-info btn-sm " id="splitBillBtn">Split Bill</a>
+
 
                 </div>
             </form>
@@ -100,7 +92,7 @@
 
 
 
-    <div class="mt-4">
+    <div class="mt-2">
         @if (count($phones) > 0)
             <table class="table">
                 <thead>
@@ -169,6 +161,8 @@
         //     printWindow.print();
         // }
 
+
+
         $("#discountInput").on("input", function() {
             updateTotalPrice();
         });
@@ -199,6 +193,38 @@
 
         }
 
+        document.getElementById('payByCashBtn').addEventListener('click', function() {
+            // Display a confirmation dialog
+            var confirmed = window.confirm('Are you sure you want to pay by cash?');
+
+            // Check if the user confirmed the action
+            if (confirmed) {
+                $phoneId = $('#phoneId').val();
+                // $.ajax({
+                //     url: '/update-phone-trail', // Replace with your actual endpoint
+                //     method: 'POST',
+                //     data: {
+                //         search: query,
+                //         _token: $('meta[name="csrf-token"]').attr('content')
+                //     },
+                //     success: function(response) {
+                //         // Show success message
+                //         alert('Your phone is sold!');
+                //     },
+                //     error: function(error) {
+                //         console.error('Error updating record', error);
+                //         // Show error message if needed
+                //     }
+                // });
+
+                // For the sake of this example, let's show a simple alert
+                alert('Your phone is sold!');
+            } else {
+                // User canceled the action
+                alert('Payment by cash canceled.');
+            }
+        });
+
         function populatePhoneDetails(phone) {
             // Populate the <p> tags
             document.getElementById('deviceModelText').innerText = phone.device_model;
@@ -215,7 +241,7 @@
             document.getElementById('sellingPrice').value = phone.sell_price;
             document.getElementById('totalPrice').value = phone.sell_price;
 
-            
+
             document.getElementById('phoneId').value = phone.id;
 
 

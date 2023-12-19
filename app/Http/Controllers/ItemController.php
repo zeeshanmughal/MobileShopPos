@@ -42,13 +42,7 @@ class ItemController extends Controller
             'item_category' => $request->item_category,
             'sku' => $request->sku,
             'manufacturer' => $request->manufacturer,
-            'device_model' => $request->device_model,
-            'warranty' => $request->warranty,
-            'imei' => $request->imei,
-            'condition' => $request->condition,
-            'physical_location' => $request->physical_location,
             'sub_category' => $request->sub_category,
-            'upc_code' => $request->upc_code,
             'short_description' => $request->short_description,
             'image' => $image_path
         ]);
@@ -65,12 +59,15 @@ class ItemController extends Controller
     public function show($id)
     {
         $item = Item::findOrFail($id);
+        
         return response()->json($item);
     }
 
     public function edit(Item $item)
     {
-        return view('retailer.create_item', compact('item'));
+        $categories = Category::all();
+
+        return view('retailer.create_item', compact('item','categories'));
     }
 
     public function update(Request $request, $id)
@@ -95,13 +92,7 @@ class ItemController extends Controller
             'item_category' => $request->item_category,
             'sku' => $request->sku,
             'manufacturer' => $request->manufacturer,
-            'device_model' => $request->device_model,
-            'warranty' => $request->warranty,
-            'imei' => $request->imei,
-            'condition' => $request->condition,
-            'physical_location' => $request->physical_location,
             'sub_category' => $request->sub_category,
-            'upc_code' => $request->upc_code,
             'short_description' => $request->short_description,
             'image' => $image_path
         ];

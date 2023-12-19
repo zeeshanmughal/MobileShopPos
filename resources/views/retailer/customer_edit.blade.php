@@ -23,10 +23,9 @@
                         <div class="form-group">
                             <label>Customer Group</label>
                             <select id="customerGroupDropdown" name="customer_group" class="form-control" >
-                                <option disabled selected value>Select</option>
-                                <option value="individual">individual</option>
-                                <option value="company">Company</option>
-                                <option value="other">Other</option>
+                                <option disabled selected value>Select Customer Group</option>
+                                <option @if($customer->customer_group == 'individual') selected @endif value="individual" >Individual</option>
+                                <option @if($customer->customer_group == 'vender') selected @endif value="vender" >Vender</option>
                             </select>
                         </div>
                     </div>
@@ -66,16 +65,22 @@
                             {{-- <div class="mt-3 d-flex" id="inputFields"></div> --}}
                         </div>
                     </div>
-                    <div class="col-md-6">
+
+                    <div class="col-md-2">
                         <div class="form-group">
-                            <label for="">Phone</label>
+                            <label for="">Country Code</label>
+                            <input type="text" name="country_code" id="countryCode" class="form-control"  value="{{ $customer->country_code }}"
+                                >
+                       
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="">Phone Number</label>
                             <input type="text" name="phone" id="mobilePhone" class="form-control"  value="{{ $customer->phone }}"
-                            placeholder="Phone Number" required>
-                            {{-- <div class="d-flex">
-                                <input type="text" name="phone" id="mobilePhone" class="form-control"
-                                    placeholder="Phone Number" required>
-                                {{-- <button class="btn bg-gradient-primary text-white py-0 px-3  ml-1">+</button> --}}
-                            {{-- </div>  --}}
+                            placeholder="Phone Number" >
+                         
                         </div>
                     </div>
 
@@ -85,9 +90,11 @@
                             <label>Network</label>
                             <select id="networkDropdown" name="network" class="form-control" >
                                 <option disabled selected value>Select Carrier</option>
-                                <option value="vodafone">vodafone</option>
-                                <option value="job">Full Time Job</option>
-                                <option value="other">Other</option>
+                                <option @if($customer->network == 'vodafone') selected @endif value="vodafone">Vodafone</option>
+                                <option @if($customer->network == 'o2') selected @endif value="o2" >O2 </option>
+                                <option @if($customer->network == 'bt_mobile') selected @endif value="bt_mobile">BT Mobile</option>
+                                <option @if($customer->network == 'sky_mobile') selected @endif value="sky_mobile">Sky Mobile</option>
+
                             </select>
                         </div>
                     </div>
@@ -159,23 +166,32 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="">Driving license</label>
-                            <input type="text" name="driving_license" id="drivingLicense" class="form-control" @if($customer->additionalInformation) value="{{ $customer->additionalInformation->driving_license }}" @endif>
+                        <div class="form-group Picture_2">
+                            <label for="">Driving License or <small>( any id proof )</small></label>
+                            <div class="d-flex">
+                                @if($customer->driving_license)
+                                <img id="drivingLicensePreview"  src="{{ asset($customer->driving_license) }}"   class="blah mr-1 previewImage"
+                                alt="Id Proof Image" />
+                                    @else
+                                    <img id="drivingLicensePreview" src="https://placehold.it/180" class="blah mr-1 previewImage"
+                                    alt="Id Proof Image" />
+                                    @endif
+                                <input type='file' name="driving_license" class="form-control" id="drivingLicense" accept="image/*" onchange="readURL(this, 'drivingLicensePreview');" />
+                            </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group Picture_2">
                             <label for="">Picture (2MB)</label>
                             <div class="d-flex">
-                                @if($customer->additionalInformation && $customer->additionalInformation->image)
-                                <img id="previewImage"  src="{{ asset($customer->additionalInformation->image) }}"   class="blah mr-1"
-                                    alt="your image" />
+                                @if($customer->image)
+                                <img id="imagePreview"  src="{{ asset($customer->image) }}"   class="blah mr-1 previewImage"
+                                    alt="Image Preview" />
                                     @else
-                                    <img id="previewImage" src="https://placehold.it/180" class="blah mr-1"
-                                    alt="your image" />
+                                    <img id="imagePreview" src="https://placehold.it/180" class="blah mr-1 previewImage"
+                                    alt="Image Preview" />
                                     @endif
-                                <input type='file' name="image" class="form-control " onchange="readURL(this);" />
+                                <input type='file' name="image" id="image" class="form-control" accept="image/*" onchange="readURL(this, 'imagePreview');" />
                             </div>
                         </div>
                     </div>
@@ -190,10 +206,17 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="">Contact Person</label>
-                            <input type="text" name="contact_person" id="contactPerson" class="form-control" @if($customer->additionalInformation) value="{{ $customer->additionalInformation->contact_person_detail }}" @endif>
+                            <input type="text" name="contact_person_name" id="contactPerson" class="form-control" @if($customer->additionalInformation) value="{{ $customer->additionalInformation->contact_person_name }}" @endif>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="">Country Code</label>
+                            <input type="text" name="contact_person_country_code" id="contactPersonCountryCode"
+                                class="form-control"  value="{{ $customer->additionalInformation->contact_person_country_code }}">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                         <div class="form-group">
                             <label for="">Phone</label>
                             <input type="text" name="contact_person_phone" id="contactPersonPhone"
@@ -243,8 +266,8 @@
 
                 <div class="row">
                     <div class="col-md-12 text-right">
-                        <button id="save" class="btn bg-gradient-primary text-white ">Save Customers</button>
-                        <button id="saveAndAdd" class="btn bg-gray-800 text-white ">Save & add another Customer</button>
+                        <button id="save" class="btn bg-gradient-primary text-white ">Update Customers</button>
+                        {{-- <button id="saveAndAdd" class="btn bg-gray-800 text-white ">Save & add another Customer</button> --}}
                         {{-- <button id="cancel" class="btn bg-gray-300 text-dark ">Cancel</button> --}}
                     </div>
                 </div>
@@ -255,8 +278,28 @@
 @endsection
 
 @push('js')
+
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            var contactPersonCountryCodeInput = document.getElementById('contactPersonCountryCode');
+            Inputmask(contactPersonCountryCode + ' 9999 999999').mask(document.getElementById('contactPersonPhone'));
+            Inputmask({
+                mask: '+999',
+                placeholder: '',
+                definitions: {
+                    '9': {
+                        validator: '[0-9]',
+                        cardinality: 1
+                    }
+                }
+            }).mask(contactPersonCountryCodeInput);
+
+             // Attach an event listener to update the mask when the country code changes
+             contactPersonCountryCodeInput.addEventListener('input', function() {
+                Inputmask(' 9999 999999').mask(document.getElementById(
+                    'contactPersonPhone'));
+            });
+
             document.getElementById('save').addEventListener('click', function(event) {
                 if (!validateForm()) {
                     event.preventDefault();

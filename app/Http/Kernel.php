@@ -39,6 +39,7 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+
         ],
         'admin' => [
             \App\Http\Middleware\EncryptCookies::class,
@@ -73,10 +74,10 @@ class Kernel extends HttpKernel
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        // 'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'admin.auth' => \App\Http\Middleware\Admin::class,
         'retailer.auth'=> \App\Http\Middleware\Retailer::class,
-        'verified' => \App\Http\Middleware\RedirectIfEmailNotVerified::class,
+        // 'verified' => \App\Http\Middleware\RedirectIfEmailNotVerified::class,
         'is_verify_email' => \App\Http\Middleware\IsVerifyEmail::class,
     ];
 }

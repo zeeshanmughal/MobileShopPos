@@ -274,15 +274,16 @@
                     '<div class="card-body"><div class="table-responsive"><table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"><thead><tr><th>Ticket #</th><th>Task</th><th>Type</th><th>Device</th><th>Status</th><th>Action</th><th>Print Ticket</th><th>Print Label</th></tr></thead><tbody>';
 
                 tickets.forEach(ticket => {
+                    console.log();
                     html += '<tr>';
                     html += '<td><a href="#" data-toggle="modal" data-target="#exampleModal">' + ticket
                         .ticket_id + '</a></td>';
                     // Accessing customer and serviceDetail attributes
                     html += '<td>' + (ticket.customer ? ticket.customer.first_name + ' ' + ticket.customer
                         .last_name : 'No Customer') + '</td>';
-                    html += '<td>' + (ticket.serviceDetail ? ticket.serviceDetail.device_issue :
+                    html += '<td>' + (ticket.service_detail ? ticket.service_detail.device_issue.issue_description :
                         'No Device Issue') + '</td>';
-                    html += '<td>' + (ticket.serviceDetail ? ticket.serviceDetail.repair_category :
+                    html += '<td>' + (ticket.service_detail ? ticket.service_detail.device_name :
                         'No Repair Category') + '</td>';
                     html += '<td><button class="pending btn text-white py-1 f-14 bg-gradient-warning">' +
                         capitalizeFirstLetter(replaceUnderscore(ticket.ticket_status)) + '</button></td>';
@@ -290,6 +291,8 @@
                         '<div class="form-group">' +
                         '<select id="dropdown" name="role" class="form-control" onchange="changeStatus(this.value, ' +
                         ticket.id + ')">' +
+                        '<option value="in_progress" ' + (ticket.ticket_status == 'pending' ?
+                            'selected' : '') + '>Pending</option>'+
                         '<option value="in_progress" ' + (ticket.ticket_status == 'in_progress' ?
                             'selected' : '') + '>In Progress</option>' +
                         '<option value="awaiting_collection" ' + (ticket.ticket_status ==

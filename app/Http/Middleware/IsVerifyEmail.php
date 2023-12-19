@@ -25,7 +25,7 @@ class IsVerifyEmail
             Auth::logout();
 
             if ($user && $user->status != 'active' ) {
-                return redirect()->route('login')->with('info', 'You account is not approved by Admin. Contact to Support or Wait for Approval');
+                return redirect()->route('login')->with('error', 'You account is not approved by Admin. Contact to Support or Wait for Approval');
             } elseif ($user && $user->is_email_verified != 1) {
                 return redirect()->route('login')->with('error', 'Your email is not verified. Please check your email for verification instructions.');
             } else {

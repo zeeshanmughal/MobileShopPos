@@ -6,14 +6,28 @@
             font-size: 14px;
         }
 
+        .styled-link {
+            color: #007bff;
+            /* Blue color */
+            text-decoration: none;
+            /* Remove underline */
+            font-weight: bold;
+            /* Make it bold */
+        }
+
+        .styled-link:hover {
+            color: #0056b3;
+            /* Darker blue on hover */
+        }
+
         .search-results {
             position: absolute;
-            top: 77px;
+            top: 38px;
             /* Adjust this value based on your layout */
             z-index: 1000;
             background-color: #fff;
             border: 1px solid #ddd;
-            width: 100%;
+            width: 67%;
             max-height: 200px;
             overflow-y: auto;
         }
@@ -68,19 +82,18 @@
     </style>
 @endpush
 @section('content')
-@if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
+@include('retailer.partials.response_message')
 
-    <form method="POST" action="{{ route('service-detail.store') }}" id="walkInCustomerForm" class="toggle_profile" enctype="multipart/form-data">
+    <form method="POST" action="{{ route('service-detail.store') }}" id="walkInCustomerServiceDetailForm" class="toggle_profile"
+        enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="customer_type" value="walk-in-by-retailer">
         <input type="hidden" name="customer_id" id="customerId">
         <input type="hidden" name="service_details[0][device_issue_id]" id="issueId">
-        <input type="hidden"  name="email_notification" id="emailNotification">
+        <input type="hidden" name="email_notification" id="emailNotification">
         <input type="hidden" name="sms_notification" id="smsNotification">
+        <input type="hidden" name="service_details[0][inventory_item_id]" id="hiddenInventoryItemId">
+
 
         <div container>
             <div class="row ">
@@ -94,97 +107,70 @@
                                         class="text-gray-900 pb-0 fw-bold">Service Details</span>
                                 </div>
                                 <div class="col-md-6">
-                        
+
                                 </div>
                             </h4>
                         </div>
                         <div id="" class=" show pt-4" aria-labelledby="headingOne"
                             data-parent=".accordionExample1">
                             <div class="row">
+
+
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="">Repair Category</label>
-                                        <select id="dropdown" name="service_details[0][repair_category]"
-                                            id="repairCategory" class="form-control">
-                                            <option disabled selected value>Select</option>
-                                            <option value="Individual">Student</option>
-                                            <option value="preferNo">Prefer not to say</option>
-                                            <option value="other">Other</option>
-                                        </select>
-                                        <div id="repairCategoryError" class="error-message"></div>
+                                        <label for="">Device Name</label>
+                                        <input list="device_names" name="service_details[0][device_name]"
+                                            class="form-control" />
+                                        <datalist id="device_names">
+                                            <option value="Iphone 13pro">
+                                            <option value="Samsung S22">
+                                            <option value="Techno Cammon">
+                                            <option value="HTC Desire S">
+                                            <option value="Google Pixel 3">
+                                            <option value="Infinix Desire">
+                                        </datalist>
+                                        {{-- <input type="text" name="service_details[0][device_name]"
+                                            placeholder="Enter Device Name" class="form-control"> --}}
+                                        <div id="deviceNameError" class="error-message"></div>
+
                                     </div>
                                 </div>
 
 
-                                {{-- <a href="#" class="text-primary">Additional Note</a>  --}}
 
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="">Select Device</label>
 
-                                        <select id="dropdown" name="service_details[0][device]" class="form-control">
-                                            <option disabled selected value>Select Device</option>
-                                            <option value="apple">Apple</option>
-                                            <option value="samsung">Samsung</option>
-                                            <option value="google">Google</option>
-                                        </select>
-                                        <div id="selectDeviceError" class="error-message"></div>
-
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="">Device Brand</label>
-                                        <input type="text" name="service_details[0][device_brand]" placeholder=""
-                                            class="form-control">
-                                        <div id="deviceBrandError" class="error-message"></div>
-
-                                    </div>
-                                </div>
-                                {{-- <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Device Issue</label>
-                                        <div class="form-group">
-                                            <div class="input-group">
-                                                <select name="service_details[0][device_issue]" class="form-control" id="deviceIssue">
-                                                    <option>Issue 1</option>
-                                                    <option>Issue 2</option>
-                                                    <option>Issue 3</option>
-
-                                                </select>
-                                                <div class="input-group-append">
-                                                    <button id="addIssueBtn"
-                                                        class="btn bg-gradient-primary text-white py-0 px-3" type="button"
-                                                        data-toggle="modal" data-target="#addIssueModal">+</button>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div> --}}
 
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="deviceIssue">Device Issue</label>
                                         <div id="searchIssueContainer" class="position-relative">
                                             <div class="input-group">
-                                                <input type="text" name="device_issue" class="form-control"
-                                                    id="deviceIssue" oninput="searchDeviceIssue()">
+                                                <input type="text" name="service_details[0][device_issue]"
+                                                    class="form-control" id="deviceIssue" oninput="searchDeviceIssue()"
+                                                    autocomplete="off">
                                                 <div class="input-group-append">
                                                     <button class="btn bg-gradient-primary text-white py-0 px-3 "
-                                                        onclick="openConfirmModal(event)">+</button>
+                                                        onclick="openConfirmModal(event)" data-toggle="tooltip"
+                                                        title="Click to add new issue">+</button>
                                                 </div>
                                             </div>
-                                            <div id="deviceIssueError" class="error-message"></div>
 
                                             <div id="searchIssueResults"
                                                 class="search-results position-absolute position-relative"
                                                 style="width: 100%;"></div>
+
                                         </div>
+                                        <div id="deviceIssueError" class="error-message"></div>
+
                                     </div>
                                 </div>
 
-
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="description">Description</label>
+                                        <input type="text" name="service_details[0][description]" class="form-control">
+                                    </div>
+                                </div>
 
 
                                 {{-- <a href="#" class="text-primary">Add Diagnostic/ Internal Notes</a> --}}
@@ -202,8 +188,35 @@
 
                                     </div>
                                 </div>
-                                {{-- <a href="#" class="text-primary">Serial Number</a> --}}
+
                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="">Mobile Pin</label>
+
+                                        <input type="text" name="service_details[0][mobile_pin]"
+                                            placeholder="Enter Mobile Pin" class="form-control">
+                                        <div id="mobilePinError" class="error-message"></div>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="inventoryItemInput">Inventory Item</label>
+                                        <input list="inventory_items" name="service_details[0][inventory_item]"
+                                            class="form-control" id="inventoryItemInput"
+                                            oninput="updateInventoryItemId(this)" autocomplete="off" />
+                                        <datalist id="inventory_items">
+                                            @foreach ($inventoryItems as $item)
+                                                <option value="{{ $item->item_name }}" data-item-id="{{ $item->id }}">
+                                            @endforeach
+                                        </datalist>
+
+                                        <div id="inventoryItemError" class="error-message"></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6"></div>
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="">Repair Status</label>
 
@@ -220,34 +233,25 @@
                                         </select>
                                     </div>
                                 </div>
-                                {{-- <a href="#" class="text-primary">Task Type</a> --}}
-                                <div class="col-md-6">
-                                    <label for="">Repair Time</label>
 
-                                    <div class="form-group">
-                                        <input type="date" name="service_details[0][repair_time]" class="form-control">
-                                        <div id="repairTimeError" class="error-message"></div>
-
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="">Assigned To</label>
-
-                                        <input type="text" name="service_details[0][assigned_to]"
-                                            placeholder="Hassam Ali" disabled class="form-control">
-                                        <div id="assignedToError" class="error-message"></div>
-
-                                    </div>
-                                </div>
                                 {{-- <a href="#" class="text-primary"></a> --}}
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="">Pickup Time</label>
+                                        <label for="">Pickup Days</label>
 
-                                        <input type="date" name="service_details[0][pickup_time]" placeholder=""
-                                            class="form-control">
-                                        <div id="pickupTimeError" class="error-message"></div>
+                                        <input type="number" name="service_details[0][pickup_days]" placeholder=""
+                                            class="form-control" min="0">
+                                        <div id="pickupDaysError" class="error-message"></div>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="">Pickup Hours</label>
+
+                                        <input type="number" name="service_details[0][pickup_hours]" placeholder=""
+                                            class="form-control" min="0">
+                                        <div id="pickupHoursError" class="error-message"></div>
 
                                     </div>
                                 </div>
@@ -257,7 +261,7 @@
                                         <label for="">Quantity</label>
 
                                         <input type="number" name="service_details[0][quantity]" min="1"
-                                            placeholder="1" class="form-control" id="quantity">
+                                            placeholder="0" class="form-control" id="quantity">
                                         <div id="quantityError" class="error-message"></div>
 
                                     </div>
@@ -284,12 +288,7 @@
 
                                     </div>
                                 </div>
-                                {{-- <a href="#" class="text-primary">GST Class</a> --}}
 
-                                {{-- < --}}
-                                {{-- <button
-                                        class="btn bg-gradient-primary text-white text-white font-12 p-1 add-row-btn">Add
-                                        Row</button> --}}
 
                             </div>
 
@@ -310,177 +309,163 @@
                                 <div class="col-md-6">
                                     <div class="form-group mb-0 d-flex" id="searchContainer">
                                         <input type="text" name="search_customer" id="searchCustomerInput"
-                                            class="form-control mr-1" placeholder="Search Customer">
+                                            class="form-control mr-1" placeholder="Search Customer" autocomplete="off">
                                         <div id="searchCustomerResults" class="search-results"></div>
 
-                                        <button class="btn bg-gradient-primary text-white py-0 px-1 "
-                                            onclick="window.location.href = '{{ route('customer.create') }}'">New</button>
+                                        <a class="btn bg-gradient-primary text-white py-1 px-1 "
+                                            href = '{{ route('customer.create') }}'">New</a>
                                     </div>
+                                    <div id="searchCustomerError" class="error-message"></div>
                                 </div>
                             </h4>
                         </div>
                         <div id="" class=" show pt-4" aria-labelledby="headingOne"
                             data-parent=".accordionExample1">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="">Customer Group</label>
-                                        <input type="text" name="customer_group" id="customerGroup" placeholder=""
-                                            class="form-control">
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="">Change Carriers</label>
-                                        <input type="text" name="change_carrier" id="changeCarrier" placeholder=""
-                                            class="form-control">
-                                    </div>
-                                </div>
-                                {{-- <div class="col-md-6">
-                                <div class="form-group">
-                                    <label>Tax Class</label>
-                                    <select id="dropdown" name="tax_class" id="taxClass" class="form-control" >
-                                        <option disabled selected value>Select</option>
-                                        <option value="Individual">Student</option>
-                                        <option value="preferNo">Prefer not to say</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
-                            </div> --}}
+
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label id="name-label" for="name">First Name</label>
                                         <input type="text" name="first_name" id="customerFirstName" placeholder=""
-                                            class="form-control">
+                                            class="form-control makeDisable">
+                                        <div id="customerFirstNameError" class="error-message"></div>
+
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="">Last Name</label>
                                         <input type="text" name="last_name" placeholder="" id="customerLastName"
-                                            class="form-control">
+                                            class="form-control makeDisable">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+
+
+                                <div class="col-md-4">
                                     <div class="form-group">
-                                        <label id="email-label" for="email">Email</label>
-                                        <div class="d-flex">
-                                            <input type="email" name="email" id="email" placeholder=""
-                                                class="mr-1 form-control">
-                                            {{-- <button class="btn bg-gradient-primary text-white py-0 px-3 ">+</button> --}}
-                                        </div>
+                                        <label for="">Country Code</label>
+                                        <input type="text" name="country_code" id="countryCode"
+                                            class="form-control makeDisable" value="+44">
+
                                     </div>
                                 </div>
+
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="">Phone</label>
+                                        <label for="">Phone Number</label>
                                         <div class="d-flex">
-                                            <input type="text" id="phone" class="form-control"
+                                            <input type="text" id="mobilePhone" class="form-control makeDisable"
                                                 placeholder="Phone Number" name="phone">
                                             {{-- <button class="btn bg-gradient-primary text-white py-0 px-3  ml-1">+</button> --}}
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="">Action</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="action" id="repairOption"
-                                            value="repair" checked>
-                                        <label class="form-check-label" for="repairOption">
-                                            Repair Phone
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="action" id="sellOption"
-                                            value="sell">
-                                        <label class="form-check-label" for="sellOption">
-                                            Sell Phone
-                                        </label>
-                                    </div>
-                                </div>
+
+
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="">Driving license</label>
-                                        <input type="text" name="driving_license" id="drivingLicense" placeholder=""
-                                            class="form-control">
-                                        <small id="drivingLicenseMessage" class="text-danger"></small>
+                                        <label id="email-label" for="email">Email</label>
+                                        <div class="d-flex">
+                                            <input type="email" name="email" id="email" placeholder=""
+                                                class="mr-1 form-control makeDisable">
+                                            {{-- <button class="btn bg-gradient-primary text-white py-0 px-3 ">+</button> --}}
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="form-group Picture_2">
+                                        <label for="">Driving License or <small>(any id proof)</small> </label>
+                                        <div class="d-flex">
+                                            <img id="drivingLicensePreview" src="https://placehold.it/180"
+                                                class="blah mr-1 previewImage" alt="Id Proof Image" />
+                                            <input type='file' name="driving_license" class="form-control"
+                                                id="drivingLicense" accept="image/*"
+                                                onchange="readURL(this, 'drivingLicensePreview');" />
+                                        </div>
+
+                                    </div>
+                                </div>
+
                                 <div class="col-md-12">
                                     <strong>Notifications</strong>
                                     <div class="row">
-                                        <div class="col-sm-3">
-                                            <h6>Email Alert</h6>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="custom-control custom-checkbox custom-control-inline">
+                                                    <input type="checkbox" class="custom-control-input"
+                                                        name="sms_notification" id="smsNotificationCheckbox">
+                                                    <label class="custom-control-label" for="smsNotificationCheckbox">SMS
+                                                        Notifications</label>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-3">
-                                            <button type="button" name="email_notification"
-                                                class="btn btn-xs btn-toggle active" id="emailAlert" data-toggle="button"
-                                                aria-pressed="false" autocomplete="off">
-                                                <div class="handle"></div>
-                                            </button>
-                                        </div>
-
-                                        <div class="col-sm-3">
-                                            <h6>SMS Alert</h6>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <button type="button" name="sms_notification" id="smsAlert"
-                                                class="btn btn-xs btn-toggle active" data-toggle="button"
-                                                aria-pressed="false" autocomplete="off">
-                                                <div class="handle"></div>
-                                            </button>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <div class="custom-control custom-checkbox custom-control-inline">
+                                                    <input type="checkbox" class="custom-control-input"
+                                                        name="email_notification" id="emailNotificationCheckbox">
+                                                    <label class="custom-control-label"
+                                                        for="emailNotificationCheckbox">Email
+                                                        Notifications</label>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="col-md-12 pt-4">
-                                    <a href="#" class="text-primary font-weight-bold"
-                                        onclick="showAddressFields(event)"><u>
-                                            <strong> Add Address <small>optional</small></strong> </u></a>
+                                    <a href="#" class="styled-link" onclick="showAddressFields(event)"><u>
+                                            <strong> Add Address <small id="optionalText"> (optional)</small></strong>
+                                        </u></a>
                                 </div>
                             </div>
-                            <div class="row" style="display:none" id="addressSection">
+
+                            <div class="container mt-3">
+                                <div class="row d-none" id="addressSection">
 
 
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="">Street Address </label>
-                                        <input type="text" name="street_address"id="streetAddress"
-                                            class="form-control">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">Street Address </label>
+                                            <input type="text" name="street_address"id="streetAddress"
+                                                class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="">House/ Aprt/ Floor No #</label>
-                                        <input type="text" name="house_number" id="houseNumber" class="form-control">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">House/Aprt/Floor No#</label>
+                                            <input type="text" name="house_number" id="houseNumber"
+                                                class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="">City</label>
-                                        <input type="text" name="city" id="city" class="form-control">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">City</label>
+                                            <input type="text" name="city" id="city" class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="">State</label>
-                                        <input type="text" name="state" id="state" class="form-control">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">State</label>
+                                            <input type="text" name="state" id="state" class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="">PostCode</label>
-                                        <input type="text" name="postcode" id="postcode" class="form-control">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">PostCode</label>
+                                            <input type="text" name="postcode" id="postcode" class="form-control">
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="">Country</label>
-                                        <input type="text" name="country" id="country" class="form-control">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="">Country</label>
+                                            <input type="text" name="country" id="country" class="form-control">
+                                        </div>
                                     </div>
-                                </div>
 
+                                </div>
                             </div>
-                            {{-- </div> --}}
+
                             <div class="mt-4">
                                 <h5 class="font-bold "><strong>Ticket Summary</strong></h5>
                             </div>
@@ -488,13 +473,13 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="">Created On</label>
-                                        <input type="date" name="created_on" class="form-control">
+                                        <input type="date" name="created_on" id="dateInput" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="">Location</label>
-                                        <input type="text" name="location" class="form-control">
+                                        <input type="text" name="location" id="location" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -575,7 +560,7 @@
 
             <div class="row mt-3">
                 <div class="col-md-12 text-right">
-                    <button type="submit" id="submitServiceBtn" class="btn bg-gradient-primary text-white ">Save
+                    <button type="submit" id="submitServiceBtn" class="btn bg-gradient-primary text-white mb-4 ">Save
                         Customer Service
                         Details</button>
                     {{-- <button id="saveWalkInCustomer" class="btn bg-gradient-primary text-white " >Save Customer Service
@@ -610,8 +595,67 @@
 @endsection
 
 @push('js')
+
     <script>
+
         $(document).ready(function() {
+            // Attach an event listener to all input fields with the class 'form-control'
+            $('.makeDisable').on('focus', function() {
+                // Get the ID of the current input field
+                var inputId = $(this).attr('id');
+                var inputVal = $(this).val();
+                console.log($(this).val());
+                if (inputVal == '') {
+                    displayError('searchCustomerError', 'You can search and select customer');
+
+                } else {
+                    displayError('searchCustomerError', '');
+
+                }
+
+                // Show an error message for the current input field
+                // $('#' + inputId + 'Error').html('Editing not allowed').addClass('text-danger');
+
+                // Prevent the user from editing the current input field
+                $(this).prop('readonly', true);
+            });
+        });
+    </script>
+
+    <script>
+        // Set the current date in the input on page load
+        document.addEventListener("DOMContentLoaded", function() {
+            var currentDate = new Date().toLocaleDateString('en-CA'); // Get current date in YYYY-MM-DD format
+            document.getElementById("dateInput").value = currentDate;
+        });
+        $(document).ready(function() {
+            $('#searchCustomerInput').on('click', function() {
+                $.ajax({
+                    url: '/get-customers',
+                    method: 'GET',
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        $('#searchCustomerResults').empty();
+                        let resultsContainer = $('#searchCustomerResults');
+                        $.each(response, function(index, customer) {
+                            resultsContainer.append(
+                                '<li class="search-result-item" data-customer-id="' +
+                                customer.id + '">' + customer.first_name + ' ' + (
+                                    customer.last_name ? customer.last_name : '') +
+                                (customer
+                                    .email ? ' - ' + customer.email : '') + '</li>'
+                            );
+
+
+                        });
+                    },
+                    error: function(error) {
+                        console.error('Error fetching search results', error);
+                    }
+                });
+            });
             $('#searchCustomerInput').on('input', function() {
                 let query = $(this).val();
                 $.ajax({
@@ -629,8 +673,8 @@
                                 '<li class="search-result-item" data-customer-id="' +
                                 customer.id + '">' + customer.first_name + ' ' + (
                                     customer.last_name ? customer.last_name : '') +
-                                (customer.phone ? ' - ' + customer.phone : (customer
-                                    .email ? ' - ' + customer.email : '')) + '</li>'
+                                (customer
+                                    .email ? ' - ' + customer.email : '') + '</li>'
                             );
 
 
@@ -660,15 +704,41 @@
                         .id); // Assuming there's an input field with ID "customerId" for storing the ID
                     $('#customerFirstName').val(response.first_name).prop('readonly', true);
                     $('#customerLastName').val(response.last_name).prop('readonly', true);
-                    $('#customerGroup').val(response.customer_group).prop('readonly', true);
-                    $('#phone').val(response.phone).prop('readonly', true);
-                    $('#drivingLicense').val(response.driving_license);
                     $('#email').val(response.email).prop('readonly', true);
-                    // Add other fields as needed
+                    $('#customerGroup').val(response.customer_group).prop('readonly', true);
+                    $('#countryCode').val(response.country_code).prop('readonly', true);
+                    $('#mobilePhone').val(response.phone).prop('readonly', true);
+                    // Check if response.driving_license exists and is not empty
+                    if (response.driving_license && response.driving_license.trim() !== '') {
+                        var drivingLicenseImageUrl = window.location.origin + '/' + response
+                            .driving_license;
+                        // Set the source of the image with the new URL
+                        $('#drivingLicensePreview').attr('src', drivingLicenseImageUrl);
+                    } else {
+                        // Optionally, you can set a default image or hide the image element
+                        $('#drivingLicensePreview').attr('src', 'https://placehold.it/180');
+                        // OR $('#drivingLicensePreview').hide();
+                    }
 
-             // Close the dropdown
-             $('#searchCustomerResults').empty();
-            
+                    var isEmailChecked = response.info.email_notification === 1;
+                    $('#emailNotificationCheckbox').prop('checked', isEmailChecked);
+
+                    var isSmsChecked = response.info.sms_notification === 1;
+                    $('#smsNotificationCheckbox').prop('checked', isSmsChecked);
+
+                    $('#streetAddress').val(response.address.street_address);
+                    $('#houseNumber').val(response.address.house_number);
+                    $('#city').val(response.address.city);
+                    $('#state').val(response.address.state);
+                    $('#postcode').val(response.address.postcode);
+                    $('#country').val(response.address.country);
+                    $('#location').val(response.address.location);
+
+
+
+                    // Close the dropdown
+                    $('#searchCustomerResults').empty();
+
                 },
                 error: function(error) {
                     console.error('Error fetching customer data', error);
@@ -690,46 +760,6 @@
 
     {{-- Service Detail Row frist --}}
     <script>
-        let rowCount = 1;
-
-        function addRow() {
-            // const tableBody = $('#service-details-table').find('tbody');
-            // let newRow = `<tr class="service-details-row">` +
-            //     `<th scope="row"></th>` +
-            //     `<td><div class="form-group"><select name="service_details[${rowCount}][repair_category]" class="form-control" ><option disabled selected value>Select Category</option><option value="Individual">Student</option><option value="preferNo">Prefer not to say</option><option value="other">Other</option></select></div></td>` +
-            //     `<td><div class="form-group"><select name="service_details[${rowCount}][device]" class="form-control"><option disabled selected value>Select Device</option><option value="apple">Apple</option><option value="samsung">Samsung</option><option value="google">Google</option></select></div></td>` +
-            //     `<td><div class="form-group"><input type="text" name="service_details[${rowCount}][device_issue]" placeholder="" class="form-control"></div></td>` +
-            //     `<td><div class="form-group"><input type="text" name="service_details[${rowCount}][imei_or_serial]" placeholder="Enter IMEI Number" class="form-control"></div></td>` +
-            //     `<td><div class="form-group"><select name="service_details[${rowCount}][repair_status]" class="form-control"> <option value="pending" selected>Pending</option></select></div></td>` +
-            //     `<td><div class="form-group"><input type="date" name="service_details[${rowCount}][repair_time]" class="form-control"></div></td>` +
-            //     `<td><div class="form-group"><input type="text" name="service_details[${rowCount}][assigned_to]" placeholder="Hassam Ali" class="form-control" disabled></div></td>` +
-            //     `<td><div class="form-group"><input type="date" name="service_details[${rowCount}][pickup_time]" placeholder="" class="form-control"></div></td>` +
-            //     `<td><div class="form-group"><input type="number" name="service_details[${rowCount}][quantity]" placeholder="1" min="1" class="form-control"></div></td>` +
-            //     `<td><div class="form-group"><input type="number" name="service_details[${rowCount}][price]" placeholder="" min="0" class="form-control" "></div></td>` +
-            //     `<td><div class="form-group"><input type="number" name="service_details[${rowCount}][tax]" placeholder="" min="0" class="form-control"></div></td>` +
-            //     `<td><button class="btn bg-gradient-primary text-white text-white font-12 p-1 add-row-btn">Add Row</button></td>` +
-            //     `</tr>`;
-            // tableBody.append(newRow);
-            // rowCount++;
-        }
-
-        $(document).ready(function() {
-            $('#service-details-table').on('click', '.add-row-btn', function() {
-                addRow();
-                $(this).closest('tr').find('.add-row-btn')
-                    .remove(); // Remove the "Add Row" button from the previous row
-            });
-
-            // $('#service-details-table').on('click', '.remove-row-btn', function () {
-            //     $(this).closest('tr').remove(); // Remove the entire row
-            // });
-        });
-
-        // $(document).ready(function() {
-        //     $('#saveWalkInCustomer').on('click', function() {
-        //         $('#walkInCustomerForm').submit(); // Replace 'yourFormId' with the actual ID of your form
-        //     });
-        // });
         $(document).ready(function() {
             // Function to update total and subtotal
             function updateTotals() {
@@ -768,119 +798,110 @@
 
         function showAddressFields(event) {
             event.preventDefault();
-
-            var addressSection = $('#addressSection').show();
-            // Focus on the first input field in the address section
+            var addressSection = document.getElementById("addressSection");
+            var optionalText = document.getElementById("optionalText");
             var firstInput = $('#addressSection input').first();
-            if (firstInput) {
-                firstInput.focus();
+
+            if (addressSection.classList.contains("d-none")) {
+                addressSection.classList.remove("d-none");
+                // Focus on the first input field in the address section
+                if (firstInput) {
+                    firstInput.focus();
+                }
+                optionalText.textContent = "(click to hide)"; // Change text to "(required)"
+            } else {
+                addressSection.classList.add("d-none");
+                optionalText.textContent = "(click to show)"; // Change text back to "(optional)"
             }
+
         }
     </script>
     {{-- Validate Form Script --}}
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add an event listener to the button
+            const addButton = document.getElementById('submitServiceBtn');
+            addButton.addEventListener('click', function(event) {
+                // Prevent the default button click behavior
+                event.preventDefault();
 
-        document.addEventListener('DOMContentLoaded', function () {
-        // Add an event listener to the button
-        const addButton = document.getElementById('submitServiceBtn');
-        addButton.addEventListener('click', function (event) {
-            // Prevent the default button click behavior
-            event.preventDefault();
-
-            // Validate the form
-            if (validateForm()) {
-                // If the form is valid, submit it
-                const form = document.getElementById('walkInCustomerForm'); // Replace 'yourFormId' with the actual ID of your form
-                form.submit();
-            }
+                // Validate the form
+                if (validateForm()) {
+                    // If the form is valid, submit it
+                    const form = document.getElementById(
+                        'walkInCustomerServiceDetailForm'); // Replace 'yourFormId' with the actual ID of your form
+                    form.submit();
+                } else {
+                    document.documentElement.scrollTop = 0;
+                }
+            });
         });
-    });
-    $('#smsAlert').click(function () {
-        // Toggle the aria-pressed attribute
-        $(this).attr('aria-pressed', function (_, value) {
-            // Set the value to 1 if the button is "on," otherwise set it to 0
-            return value === 'false' ? 'true' : 'false';
-        });
-
-        // Get the updated value
-        var smsNotificationValue = $('#smsAlert').attr('aria-pressed') === 'true' ? '1' : '0';
-
-        // Log the value to the console (you can remove this in your actual code)
-        console.log('sms_notification value:', smsNotificationValue);
-        $('#smsNotification').val(smsNotificationValue);
-
-    });
-    $('#emailAlert').click(function () {
-        // Toggle the aria-pressed attribute
-        $(this).attr('aria-pressed', function (_, value) {
-            // Set the value to 1 if the button is "on," otherwise set it to 0
-            return value === 'false' ? 'true' : 'false';
-        });
-
-        // Get the updated value
-        var emailNotificationValue = $('#emailAlert').attr('aria-pressed') === 'true' ? '1' : '0';
-
-        // Log the value to the console (you can remove this in your actual code)
-        console.log('email_notification value:', emailNotificationValue);
-        $('#emailNotification').val(emailNotificationValue);
-
-        
-    });
+  
 
         function validateForm() {
             clearErrors();
             // Flag to check if the form is valid
             let isValid = true;
 
-            // Validate Repair Category
-            const repairCategory = document.getElementById('repairCategory');
-            if (repairCategory && repairCategory.selectedIndex < 0) {
-                displayError('repairCategoryError', 'Please select a Repair Category.');
-                isValid = false;
-            }
-      
 
-            // Validate Select Device
-            const selectDevice = document.getElementById('selectDevice');
-            if (selectDevice && selectDevice.selectedIndex < 0) {
-                displayError('selectDeviceError', 'Please select a Device.');
-                isValid = false;
-            }
 
             // Validate Device Brand
-            const deviceBrand = document.querySelector('input[name="service_details[0][device_brand]"]').value;
-            if (deviceBrand.trim() === '') {
-                displayError('deviceBrandError', 'Please enter a Device Brand.');
+            const deviceName = document.querySelector('input[name="service_details[0][device_name]"]').value;
+            if (deviceName.trim() === '') {
+                displayError('deviceNameError', 'Please enter a Device Name.');
                 isValid = false;
             }
 
             // Validate Device Issue
-            // const deviceIssue = document.querySelector('input[name="device_issue"]').value;
-            // if (deviceIssue.trim() === '') {
-            //     displayError('deviceIssueError', 'Please enter a Device Issue.');
-            //     isValid = false;
-            // }
+            const deviceIssue = document.querySelector('input[name="service_details[0][device_issue]"]').value;
+            if (deviceIssue.trim() === '') {
+                displayError('deviceIssueError', 'Please enter a Device Issue.');
+                isValid = false;
+            }
 
             // Validate IMEI or Serial Number
-            const imeiOrSerial = document.querySelector('input[name="service_details[0][imei_or_serial]"]').value;
-            if (imeiOrSerial.trim() === '') {
-                displayError('imeiError', 'Please enter an IMEI or Serial Number.');
+            const imei = document.querySelector('input[name="service_details[0][imei_or_serial]"]').value;
+            if (imei.trim() === '') {
+                displayError('imeiError', 'Please enter your imei or serial number.');
+                isValid = false;
+            }
+
+            // Validate Mobile Pin
+            const mobilePin = document.querySelector('input[name="service_details[0][mobile_pin]"]').value;
+            if (mobilePin.trim() === '') {
+                displayError('mobilePinError', 'Please enter your mobile pin.');
+                isValid = false;
+            }
+
+            // Validate Inventory Item
+            const inventoryItem = document.querySelector('input[name="service_details[0][inventory_item]"]').value;
+            if (inventoryItem.trim() === '') {
+                displayError('inventoryItemError', 'Select you inventory item');
+                isValid = false;
+            }
+
+            
+            const selectedCustomer = document.getElementById('customerId').value;
+            if (selectedCustomer.trim() == '') {
+                displayError('searchCustomerError', 'Please search and select customer');
                 isValid = false;
             }
 
             // Validate Repair Time
-            // const repairTime = document.querySelector('input[name="service_details[0][repair_time]"]').value;
-            // if (repairTime.trim() === '') {
-            //     displayError('repairTimeError', 'Please select a Repair Time.');
-            //     isValid = false;
-            // }
+            const pickupDays = document.querySelector('input[name="service_details[0][pickup_days]"]').value;
+            const pickupHours = document.querySelector('input[name="service_details[0][pickup_hours]"]').value;
+
+            if (pickupDays.trim() === '' && pickupHours.trim() === '') {
+                displayError('pickupDaysError', 'Please select a pickup time.');
+                isValid = false;
+            }
 
             // Validate Quantity
-            // const quantity = document.querySelector('input[name="service_details[0][quantity]"]').value;
-            // if (quantity.trim() === '' || quantity <= 0) {
-            //     displayError('quantityError', 'Please enter a valid Quantity.');
-            //     isValid = false;
-            // }
+            const quantity = document.querySelector('input[name="service_details[0][quantity]"]').value;
+            if (quantity.trim() === '' || quantity <= 0) {
+                displayError('quantityError', 'Please enter a valid Quantity.');
+                isValid = false;
+            }
 
             // Validate Price
             const price = document.querySelector('input[name="service_details[0][price]"]').value;
@@ -900,24 +921,7 @@
             return isValid;
 
 
-            // Check if the "Sell Phone" option is selected
-            var sellOptionSelected = document.getElementById('sellOption').checked;
-
-            // Get the driving license input and message elements
-            var drivingLicenseInput = document.getElementById('drivingLicense');
-            var drivingLicenseMessage = document.getElementById('drivingLicenseMessage');
-
-            // Set the "required" attribute based on the selected option
-            drivingLicenseInput.required = sellOptionSelected;
-
-            // Show/hide the validation message based on the "required" attribute
-            if (sellOptionSelected && !drivingLicenseInput.value.trim()) {
-                // If "Sell Phone" is selected and driving license is not entered
-                drivingLicenseMessage.innerText = "This field is required for selling a phone.";
-                event.preventDefault(); // Prevent form submission
-            } else {
-                drivingLicenseMessage.innerText = ""; // Clear the message
-            }
+     
         }
 
 
@@ -1036,11 +1040,33 @@
                 },
                 error: function(error) {
                     console.error('Error:', error);
-                    alert('An error occurred while adding the issue');
+                    // alert('An error occurred while adding the issue');
 
                 }
             });
 
+        }
+
+        function updateInventoryItemId(input) {
+            var selectedOption = getSelectedOption(input.value);
+            if (selectedOption) {
+                var itemId = selectedOption.getAttribute('data-item-id');
+                // Set the hidden input value to the selected item ID
+                document.getElementById('hiddenInventoryItemId').value = itemId;
+            } else {
+                // Handle the case when no option is selected
+                document.getElementById('hiddenInventoryItemId').value = '';
+            }
+        }
+
+        function getSelectedOption(inputValue) {
+            var options = document.getElementById('inventory_items').getElementsByTagName('option');
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].value === inputValue) {
+                    return options[i];
+                }
+            }
+            return null;
         }
 
         function openConfirmModal(event) {

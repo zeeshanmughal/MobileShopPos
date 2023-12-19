@@ -10,7 +10,7 @@ use Laravel\Cashier\Billable;
 
 class User extends Authenticatable 
 {
-    use  HasFactory, Notifiable, Billable;
+    use   HasFactory, Notifiable, Billable;
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
         'is_email_verified'
     ];
 
@@ -51,5 +52,11 @@ class User extends Authenticatable
     public function isSubscribed($plan = 'default')
     {
         return $this->subscribed($plan);
+    }
+
+    public function hasFreeTrial()
+    {
+        // Check if the user is subscribed to a specific price representing the free trial
+        return $this->subscribedToPrice('price_id_for_free_trial');
     }
 }

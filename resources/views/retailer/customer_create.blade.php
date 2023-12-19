@@ -21,19 +21,17 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Customer Group</label>
-                            <select id="customerGroupDropdown" name="customer_group" class="form-control" >
-                                <option disabled selected value>Select</option>
-                                <option value="individual">individual</option>
-                                <option value="company">Company</option>
-                                <option value="other">Other</option>
+                            <select id="customerGroupDropdown" name="customer_group" class="form-control">
+                                <option disabled selected value>Select Customer Group</option>
+                                <option value="individual">Individual</option>
+                                <option value="vender">Vender</option>
                             </select>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label id="name-label" for="name">Organization</label>
-                            <input type="text" name="organization" id="organization" placeholder="" class="form-control"
-                                >
+                            <input type="text" name="organization" id="organization" placeholder="" class="form-control">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -53,9 +51,13 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label id="email-label" for="email">Email</label>
-                                <input type="email" name="email" id="email" placeholder="someone@domain.com"
-                                    class="form-control" required>
-                                {{-- <button id="addEmailBtn" class="btn bg-gradient-primary text-white py-0 px-3 " onclick="addEmailInput()">+</button> --}}
+                            <input type="email" name="email" id="email" placeholder="someone@domain.com"
+                                class="form-control" required>
+
+                                @error('email')
+                                <p class="error-message">{{ $message }}</p>
+                            @enderror
+                            {{-- <button id="addEmailBtn" class="btn bg-gradient-primary text-white py-0 px-3 " onclick="addEmailInput()">+</button> --}}
 
                             {{-- <div class="d-flex">
                                 <input type="email" name="email" id="email" placeholder="someone@domain.com"
@@ -66,16 +68,22 @@
                             {{-- <div class="mt-3 d-flex" id="inputFields"></div> --}}
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-2">
                         <div class="form-group">
-                            <label for="">Phone</label>
+                            <label for="">Country Code</label>
+                            <input type="text" name="country_code" id="countryCode" class="form-control"  value="{{ old('country_code') ?? '+44' }}"
+                                required>
+                       
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="">Phone Number</label>
                             <input type="text" name="phone" id="mobilePhone" class="form-control"
-                            placeholder="Phone Number" required>
-                            {{-- <div class="d-flex">
-                                <input type="text" name="phone" id="mobilePhone" class="form-control"
-                                    placeholder="Phone Number" required>
-                                {{-- <button class="btn bg-gradient-primary text-white py-0 px-3  ml-1">+</button> --}}
-                            {{-- </div>  --}}
+                                placeholder="Phone Number" value="{{ old('phone') }}" required>
+                                @error('phone')
+                                <p class="error-message">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
 
@@ -83,11 +91,12 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Network</label>
-                            <select id="networkDropdown" name="network" class="form-control" >
-                                <option disabled selected value>Select Carrier</option>
-                                <option value="vodafone">vodafone</option>
-                                <option value="job">Full Time Job</option>
-                                <option value="other">Other</option>
+                            <select id="networkDropdown" name="network" class="form-control">
+                                <option disabled selected value>Select Network</option>
+                                <option value="vodafone">Vodafone</option>
+                                <option value="o2">O2</option>
+                                <option value="bt_mobile">BT Mobile</option>
+                                <option value="sky_mobile">Sky Mobile</option>
                             </select>
                         </div>
                     </div>
@@ -97,8 +106,8 @@
 
                 <div class="row">
                     <div class="col-md-12">
-                        <h3 class="text-gray-900 fw-bold">Address</h1>
-                            <hr>
+                        <h3 class="text-gray-900 fw-bold">Address<small> (optional) </small></h3>
+                        <hr>
                     </div>
 
                     <div class="col-md-6">
@@ -149,7 +158,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="">Customer ID Type </label>
-                            <input type="text" name="customer_id_type" id="customerIdType" class="form-control">
+                            <input type="text" name="customer_id_type" id="customerIdType" class="form-control" placeholder="Social Security Number">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -159,19 +168,35 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="">Driving license</label>
-                            <input type="text" name="driving_license" id="drivingLicense" class="form-control">
+                        <div class="form-group Picture_2">
+                            <label for="">Driving License or <small>( any id proof )</small> </label>
+                            <div class="d-flex">
+                                <img id="drivingLicensePreview" src="https://placehold.it/180" class="blah mr-1 previewImage"
+                                    alt="Id Proof Image" />
+                                <input type='file' name="driving_license" class="form-control" id="drivingLicense"
+                                    accept="image/*" onchange="readURL(this, 'drivingLicensePreview');" />
+                            </div>
+                        
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group Picture_2">
-                            <label for="">Picture (2MB)</label>
+                            <label for="">Picture </label>
                             <div class="d-flex">
-                                <img id="previewImage" src="https://placehold.it/180" class="blah mr-1"
-                                    alt="your image" />
-                                <input type='file' name="image" class="form-control " onchange="readURL(this);" />
+                                <img id="imagePreview" src="https://placehold.it/180" class="blah mr-1 previewImage"
+                                alt="Image Preview"/>
+                                <input type='file' name="image" class="form-control" id="image"
+                                    accept="image/*" onchange="readURL(this, 'imagePreview');" />
                             </div>
+                            {{-- <small class="text-muted">
+                                Click to
+                                <a href="#" onclick="openCamera()">Take a photo using the camera</a>
+                                or
+                                <a href="#" onclick="chooseFromLibrary()">Choose from library</a>.
+                            </small>
+                            <div id="cameraFeed" style="display:none;">
+                                <video id="cameraPreview" width="100%" height="auto" autoplay playsinline></video>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -185,12 +210,19 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="">Contact Person</label>
-                            <input type="text" name="contact_person" id="contactPerson" class="form-control">
+                            <input type="text" name="contact_person_name" id="contactPerson" class="form-control">
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-2">
                         <div class="form-group">
-                            <label for="">Phone</label>
+                            <label for="">Country Code</label>
+                            <input type="text" name="contact_person_country_code" id="contactPersonCountryCode"
+                                class="form-control"  value="+44">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="">Phone Number</label>
                             <input type="text" name="contact_person_phone" id="contactPersonPhone"
                                 class="form-control">
                         </div>
@@ -214,22 +246,22 @@
                         <div class="form-group">
                             <div class="custom-control custom-checkbox custom-control-inline">
                                 <input type="checkbox" class="custom-control-input" name="compliance_gdpr"
-                                    value="yes" id="yes" checked="">
-                                <label class="custom-control-label" for="yes">Compliance with GDPR</label>
+                                    value="yes" id="compliance">
+                                <label class="custom-control-label" for="compliance">Compliance with GDPR</label>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="custom-control custom-checkbox custom-control-inline">
                                 <input type="checkbox" class="custom-control-input" name="sms_notification"
-                                    value="yes" id="yes" checked="">
-                                <label class="custom-control-label" for="yes">SMS Notifications</label>
+                                    value="yes" id="sms">
+                                <label class="custom-control-label" for="sms">SMS Notifications</label>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="custom-control custom-checkbox custom-control-inline">
                                 <input type="checkbox" class="custom-control-input" name="email_notification"
-                                    value="yes" id="yes" checked="">
-                                <label class="custom-control-label" for="yes">Email Notifiactions</label>
+                                    value="yes" id="emailNotification">
+                                <label class="custom-control-label" for="emailNotification">Email Notifiactions</label>
                             </div>
                         </div>
                     </div>
@@ -239,8 +271,8 @@
                 <div class="row">
                     <div class="col-md-12 text-right">
                         <button id="save" class="btn bg-gradient-primary text-white ">Save Customers</button>
-                        <button id="saveAndAdd" class="btn bg-gray-800 text-white ">Save & add another Customer</button>
-                        <button id="cancel" class="btn bg-gray-300 text-dark ">Cancel</button>
+                        {{-- <button id="saveAndAdd" class="btn bg-gray-800 text-white ">Save & add another Customer</button> --}}
+                        {{-- <button id="cancel" class="btn bg-gray-300 text-dark ">Cancel</button> --}}
                     </div>
                 </div>
 
@@ -250,8 +282,64 @@
 @endsection
 
 @push('js')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+
     <script>
+        var fileInput = document.getElementById('image');
+        var cameraFeed = document.getElementById('cameraFeed');
+        var cameraPreview = document.getElementById('cameraPreview');
+
+        function openCamera() {
+            // Check if the browser supports getUserMedia
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({
+                        video: true
+                    })
+                    .then(function(stream) {
+                        // Success callback
+                        // Use the stream to capture an image or display a live camera feed
+                        // This example just stops the camera immediately
+                        cameraFeed.style.display = 'block';
+                        cameraPreview.srcObject = stream;
+                        // stream.getTracks().forEach(track => track.stop());
+                    })
+                    .catch(function(error) {
+                        console.error('Error accessing camera:', error);
+                    });
+            } else {
+                alert('Your browser does not support accessing the camera.');
+            }
+        }
+
+        function chooseFromLibrary() {
+            console.log('Choosing from library');
+            cameraFeed.style.display = 'none';
+            fileInput.removeAttribute('capture');
+            fileInput.click(); // Open file dialog to choose from library
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
+
+            var contactPersonCountryCodeInput = document.getElementById('contactPersonCountryCode');
+            Inputmask(contactPersonCountryCode + ' 9999 999999').mask(document.getElementById('contactPersonPhone'));
+            Inputmask({
+                mask: '+999',
+                placeholder: '',
+                definitions: {
+                    '9': {
+                        validator: '[0-9]',
+                        cardinality: 1
+                    }
+                }
+            }).mask(contactPersonCountryCodeInput);
+
+             // Attach an event listener to update the mask when the country code changes
+             contactPersonCountryCodeInput.addEventListener('input', function() {
+                Inputmask(' 9999 999999').mask(document.getElementById(
+                    'contactPersonPhone'));
+            });
+
+
             document.getElementById('save').addEventListener('click', function(event) {
                 if (!validateForm()) {
                     event.preventDefault();
@@ -287,15 +375,21 @@
 
                 }
 
-                            // Email validation
-            if (inputs[i].type === 'email' && inputs[i].value.trim() !== '' && !validateEmail(inputs[i].value.trim())) {
-                errors.push({ input: inputs[i], message: 'Please enter a valid email address.' });
-            }
+                // Email validation
+                if (inputs[i].type === 'email' && inputs[i].value.trim() !== '' && !validateEmail(inputs[i].value.trim())) {
+                    errors.push({
+                        input: inputs[i],
+                        message: 'Please enter a valid email address.'
+                    });
+                }
 
-            // Phone validation
-            if (inputs[i].type === 'tel' &&  inputs[i].value.trim() !== '' && !validatePhone(inputs[i].value.trim())) {
-                errors.push({ input: inputs[i], message: 'Please enter a valid phone number.' });
-            }
+                // Phone validation
+                if (inputs[i].type === 'tel' && inputs[i].value.trim() !== '' && !validatePhone(inputs[i].value.trim())) {
+                    errors.push({
+                        input: inputs[i],
+                        message: 'Please enter a valid phone number.'
+                    });
+                }
             }
             // Display all errors
             errors.forEach(function(error) {
@@ -315,16 +409,16 @@
         }
 
         function validateEmail(email) {
-        // Simple email validation regex
-        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
+            // Simple email validation regex
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
 
-    function validatePhone(phone) {
-        // Simple phone number validation regex
-        var phoneRegex = /^[0-9]{15}$/;
-        return phoneRegex.test(phone);
-    }
+        function validatePhone(phone) {
+            // Simple phone number validation regex
+            var phoneRegex = /^[0-9]{15}$/;
+            return phoneRegex.test(phone);
+        }
 
         function removeErrorMessages() {
             var errorMessages = document.querySelectorAll('.error-message');

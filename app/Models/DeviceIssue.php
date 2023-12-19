@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class DeviceIssue extends Model
 {
     use HasFactory;
-    protected $fillable = ['device_description'];
+    protected $fillable = ['issue_description'];
 }

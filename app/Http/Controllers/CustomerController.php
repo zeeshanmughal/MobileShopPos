@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Log;
 use Exception;
 use Carbon\Carbon;
 use App\Models\Ticket;
@@ -13,7 +14,11 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\ServiceDetail;
 use App\Models\CustomerAddress;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Models\CustomerAdditionalInformation;
 
@@ -21,12 +26,19 @@ class CustomerController extends Controller
 {
     //
 
-    public function index()
+  
+    public function index(Request $request)
     {
-        $customers = Customer::paginate(10);
+        $search = $request->input('search');
 
-
+        $customers = Customer::when($search, function ($query) use ($search) {
+            $query->where('first_name', 'like', '%' . $search . '%')
+                  ->orWhere('last_name', 'like', '%' . $search . '%')
+                  ->orWhere('email', 'like', '%' . $search . '%');
+        })->paginate(10); // Adjust the number of items per page as needed
+    
         return view('retailer.customers', compact('customers'));
+
     }
 
     public function create()
@@ -36,38 +48,168 @@ class CustomerController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request->all());
         $validator = Validator::make($request->all(), [
             // Add validation rules for each field
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('customers')->whereNull('deleted_at'), // Ensures uniqueness in non-deleted records
+            ],
+            'phone' => [
+                'required',
+                Rule::unique('customers')->whereNull('deleted_at'), // Ensures uniqueness in non-deleted records
+            ],
         ]);
 
         if ($validator->fails()) {
-            // Handle the validation errors
-        } else {
+            return redirect()
+            ->back()
+            ->withErrors($validator)
+            ->withInput();
+        }
+
+        try {
+
+            DB::beginTransaction();
 
             // Customer
+            $customer = Customer::create([
+                'uuid' => Str::uuid(),
+                'slug' => createSlug($request->first_name . $request->last_name),
+                'customer_group' => $request->customer_group,
+                'organization' => $request->organization,
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'country_code' => $request->country_code,
+                'phone' => $request->phone,
+                'network' => $request->network,
+                'driving_license' => saveImage($request->file('driving_license'), 'customer_identity_images'),
+                'image' => saveImage($request->file('image'), 'customer_images'),
+                'tax_class' => $request->tax_class,
+                'walk_in_customer' => $request->customer_type === 'walk-in' ? 1 : 0,
+            ]);
 
-            $customer = new Customer();
-            $customer->uuid = Str::uuid();
-            $customer->slug = createSlug($request->first_name . $request->last_name);
+            // Customer Address
+            CustomerAddress::create([
+                'customer_id' => $customer->id,
+                'street_address' => $request->street_address,
+                'house_number' => $request->house_number,
+                'city' => $request->city,
+                'state' => $request->state,
+                'postcode' => $request->postcode,
+                'country' => $request->country,
+                'location' => $request->location,
+            ]);
+
+              // Customer Additional Information
+        CustomerAdditionalInformation::create([
+            'customer_id' => $customer->id,
+            'customer_id_type' => $request->customer_id_type,
+            'id_number' => $request->id_number,
+            'driving_license' => $customer->driving_license,
+            'image' => $customer->image,
+            'contact_person_name' => $request->contact_person_name,
+            'contact_person_country_code' => $request->contact_person_country_code,
+            'contact_person_phone' => $request->contact_person_phone,
+            'relation' => $request->relation,
+            'compliance_gdpr' => $request->compliance_gdpr === 'yes' ? 1 : 0,
+            'sms_notification' => $request->sms_notification === 'yes' ? 1 : 0,
+            'email_notification' => $request->email_notification === 'yes' ? 1 : 0,
+        ]);
+
+        DB::commit();
+        return redirect()->route('customers.index')->with('success', 'Customer saved successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+        Log::error($e);
+
+        return redirect()
+            ->back()
+            ->withInput()
+            ->with('error', 'Failed to save customer. Please try again.');
+        }
+    }
+
+    
+    
+
+    public function edit($id)
+    {
+        $customer = Customer::find($id);
+        $customerAddress = CustomerAddress::where('customer_id', $id)->first();
+        $customerAdditionalInformation = CustomerAdditionalInformation::where('customer_id', $id)->first();
+
+        return view('retailer.customer_edit', compact('customer'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        // dd($request->customer_group,'----',$request->network);
+
+
+        $customer = Customer::find($id);
+        if (!$customer) {
+            return redirect()->back()->with('error', 'Customer not found');
+        } else {
+
+
+
+
+            if ($request->hasFile('image')) {
+                $imagePath = saveImage($request->file('image'), 'customer_images');
+                if ($customer->image) {
+
+                    $previousImage = $customer->image;
+
+                    if (File::exists($previousImage)) {
+                        File::delete($previousImage);
+                    }
+                }
+            } else {
+                // No new image uploaded, use the existing image path or set it to null if none
+                $imagePath = $customer->image ?: null;
+            }
+
+            if ($request->hasFile('driving_license')) {
+                $drivingLicenseFilePath = saveImage($request->file('driving_license'), 'customer_identity_images');
+                if ($customer->driving_license) {
+                    $previousLicenseFile = $customer->driving_license;
+                    if (File::exists($previousLicenseFile)) {
+                        File::delete($previousLicenseFile);
+                    }
+                }
+            } else {
+                $drivingLicenseFilePath = $customer->driving_license ?: null;
+            }
+
+
             $customer->customer_group = $request->customer_group;
             $customer->organization = $request->organization;
             $customer->first_name = $request->first_name;
             $customer->last_name = $request->last_name;
             $customer->email = $request->email;
+            $customer->country_code = $request->country_code;
             $customer->phone = $request->phone;
-            $customer->how_did_you_hear_us = $request->how_did_you_hear_us;
             $customer->network = $request->network;
+            $customer->driving_license = $drivingLicenseFilePath;
+            $customer->image = $imagePath;
+
             $customer->tax_class = $request->tax_class;
 
             if ($request->customer_type == 'walk-in') {
 
                 $customer->walk_in_customer = 1;
+            } else {
+                $customer->walk_in_customer = 0;
             }
             $customer->save();
 
-            // Customer Address
-            $customerAddress = new CustomerAddress();
+            $customerAddress = CustomerAddress::where('customer_id', $id)->first();
+            if (!$customerAddress) {
+                $customerAddress = new CustomerAddress();
+            }
             $customerAddress->customer_id = $customer->id;
             $customerAddress->street_address = $request->street_address;
             $customerAddress->house_number = $request->house_number;
@@ -78,20 +220,20 @@ class CustomerController extends Controller
             $customerAddress->location = $request->location;
             $customerAddress->save();
 
-            // Customer Additional Information
-            $customerAdditionalInformation = new CustomerAdditionalInformation();
+            $customerAdditionalInformation = CustomerAdditionalInformation::where('customer_id', $id)->first();
+            if (!$customerAdditionalInformation) {
+                $customerAdditionalInformation = new CustomerAdditionalInformation();
+            }
             $customerAdditionalInformation->customer_id = $customer->id;
             $customerAdditionalInformation->customer_id_type = $request->customer_id_type;
             $customerAdditionalInformation->id_number = $request->id_number;
-            $customerAdditionalInformation->driving_license = $request->driving_license;
-            if ($request->image) {
-                $imagePath = saveImage($request->image, 'customer_images');
-                $customerAdditionalInformation->image = $imagePath;
-                // 
+            $customerAdditionalInformation->driving_license = $drivingLicenseFilePath;
+            $customerAdditionalInformation->image = $imagePath;
 
-            }
-            $customerAdditionalInformation->contact_person_detail = $request->contact_person;
+            $customerAdditionalInformation->contact_person_name = $request->contact_person_name;
+            $customerAdditionalInformation->contact_person_country_code = $request->contact_person_country_code;
             $customerAdditionalInformation->contact_person_phone = $request->contact_person_phone;
+
             $customerAdditionalInformation->relation = $request->relation;
             if ($request->compliance_gdpr == 'yes') {
                 $customerAdditionalInformation->compliance_gdpr = 1;
@@ -109,103 +251,27 @@ class CustomerController extends Controller
                 $customerAdditionalInformation->email_notification = 0;
             }
             $customerAdditionalInformation->save();
-
-
-
-
-
-            return redirect()->back();
         }
-    }
-
-    public function edit($id)
-    {
-        $customer = Customer::find($id);
-        $customerAddress = CustomerAddress::where('customer_id', $id)->first();
-        $customerAdditionalInformation = CustomerAdditionalInformation::where('customer_id', $id)->first();
-
-        return view('retailer.customer_edit', compact('customer'));
-    }
-
-    public function update(Request $request, $id)
-    {
-       
-        $customer = Customer::find($id);
-      
-        $customer->customer_group = 'individual';
-        $customer->organization = $request->organization;
-        $customer->first_name = $request->first_name;
-        $customer->last_name = $request->last_name;
-        $customer->email = $request->email;
-        $customer->phone = $request->phone;
-        $customer->network = $request->network;
-        $customer->tax_class = $request->tax_class;
-
-        if ($request->customer_type == 'walk-in') {
-
-            $customer->walk_in_customer = 1;
-        }else{
-            $customer->walk_in_customer = 0;
-            
-        }
-        $customer->save();
-
-        $customerAddress = CustomerAddress::where('customer_id', $id)->first();
-        if(!$customerAddress){
-            $customerAddress = new CustomerAddress();
-        }
-        $customerAddress->customer_id = $customer->id;
-        $customerAddress->street_address = $request->street_address;
-        $customerAddress->house_number = $request->house_number;
-        $customerAddress->city = $request->city;
-        $customerAddress->state = $request->state;
-        $customerAddress->postcode = $request->postcode;
-        $customerAddress->country = $request->country;
-        $customerAddress->location = $request->location;
-        $customerAddress->save();
-
-        $customerAdditionalInformation = CustomerAdditionalInformation::where('customer_id', $id)->first();
-        if(!$customerAdditionalInformation){
-            $customerAdditionalInformation = new CustomerAdditionalInformation();
-        }
-        $customerAdditionalInformation->customer_id = $customer->id;
-        $customerAdditionalInformation->customer_id_type = $request->customer_id_type;
-        $customerAdditionalInformation->id_number = $request->id_number;
-        $customerAdditionalInformation->driving_license = $request->driving_license;
-        if ($request->image) {
-            $imagePath = saveImage($request->image, 'customer_images');
-            $customerAdditionalInformation->image = $imagePath;
-        }
-        $customerAdditionalInformation->contact_person_detail = $request->contact_person;
-        $customerAdditionalInformation->contact_person_phone = $request->contact_person_phone;
-        $customerAdditionalInformation->relation = $request->relation;
-        if ($request->compliance_gdpr == 'yes') {
-            $customerAdditionalInformation->compliance_gdpr = 1;
-        } else {
-            $customerAdditionalInformation->compliance_gdpr = 0;
-        }
-        if ($request->sms_notification == 'yes') {
-            $customerAdditionalInformation->sms_notification = 1;
-        } else {
-            $customerAdditionalInformation->sms_notification = 0;
-        }
-        if ($request->email_notification == 'yes') {
-            $customerAdditionalInformation->email_notification = 1;
-        } else {
-            $customerAdditionalInformation->email_notification = 0;
-        }
-        $customerAdditionalInformation->save();
-
-        return redirect()->back();
+        return redirect()->route('customers.index')->with('success',  'Customer updated.');
     }
 
     public function destroy($id)
     {
-        Customer::destroy($id);
-        CustomerAddress::where('customer_id', $id)->delete();
-        CustomerAdditionalInformation::where('customer_id', $id)->delete();
+        $customer = Customer::findOrFail($id);
+        if (!$customer) {
+            return redirect()->route('customers.index')->with('error', 'Customer not found');
+        } else {
+            $customer->address()->delete();
+            $customer->additionalInformation()->delete();
+            $customer->serviceDetails()->delete();
+            $customer->tickets()->delete();
 
-        return redirect()->back();
+            if ($customer->delete()) {
+                return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
+            } else {
+                return redirect()->route('customers.index')->with('error', 'Failed to delete customer.');
+            }
+        }
     }
 
     public function searchCustomer(Request $request)
@@ -221,11 +287,26 @@ class CustomerController extends Controller
         return response()->json([]);
     }
 
+    public function getDropdownCustomers()
+    {
+        $results = Customer::take(5)->get();
+        return response()->json($results);
+    }
+
     public function fetchCustomerData(Request $request)
     {
         $customerId = $request->get('customerId');
 
         $customer = Customer::find($customerId);
+        if (!$customer) {
+            return response()->json([]);
+        } else {
+            $customerAddress = $customer->address;
+            $customerAdditionalInformation = $customer->additionalInformation;
+            $customer->address = $customerAddress;
+            $customer->info = $customerAdditionalInformation;
+        }
+
         return response()->json($customer);
     }
 
@@ -328,15 +409,22 @@ class CustomerController extends Controller
 
             // Customer
 
+            if ($request->hasFile('driving_license')) {
+                $drivingLicenseFilePath = saveImage($request->file('driving_license'), 'customer_identity_images');
+            } else {
+                $drivingLicenseFilePath = null;
+            }
+
             $customer = new Customer();
             $customer->uuid = Str::uuid();
             $customer->slug = createSlug($request->first_name . $request->last_name);
-            $customer->customer_group = $request->customer_group;
+            // $customer->customer_group = $request->customer_group;
             $customer->first_name = $request->first_name;
             $customer->last_name = $request->last_name;
             $customer->email = $request->email;
+            $customer->country_code = $request->country_code;
             $customer->phone = $request->phone;
-            $customer->driving_license = $request->driving_license;
+            $customer->driving_license = $drivingLicenseFilePath;
 
 
             if ($request->customer_type == 'walk-in-customer') {
@@ -369,11 +457,11 @@ class CustomerController extends Controller
                         $deviceIssue = DeviceIssue::where('id', $detail['device_issue_id'])->first();
                         $serviceDetail = new ServiceDetail();
                         $serviceDetail->customer_id = $customer->id;
-                        $serviceDetail->repair_category = $detail['repair_category'];
-                        $serviceDetail->device = $detail['device'];
-                        $serviceDetail->device_issue = $deviceIssue->issue_description;
+                        $serviceDetail->device_name = $detail['device_name'];
+                        $serviceDetail->device_issue = $deviceIssue->id;
                         $serviceDetail->imei_or_serial = $detail['imei_or_serial'];
                         $serviceDetail->repair_status = 'pending';
+                        $serviceDetail->assigned_to = 'Hassam Ali';
 
                         if ($detail['quantity'] == null) {
                             $quantity = 1;
@@ -388,8 +476,9 @@ class CustomerController extends Controller
                             $ticket->customer_id = $customer->id;
                             // $ticket->user_id = Auth::user()->id;
                             $ticket->service_detail_id = $serviceDetail->id;
-                            $ticket->device = $serviceDetail->device;
+                            $ticket->device_name = $serviceDetail->device_name;
                             $ticket->ticket_status = 'pending';
+                            $ticket->ticket_purpose = 'repair';
                             $ticket->created_date = Carbon::now();
                             $ticket->select_criteria = 'select_criteria';
                             if ($ticket->save()) {
@@ -413,7 +502,7 @@ class CustomerController extends Controller
                             }
                         }
                     }
-                    return redirect()->route('getWalkinCustomerTicketView', ['customer_id'=> $customer->id])->with([
+                    return redirect()->route('getWalkinCustomerTicketView', ['customer_id' => $customer->id])->with([
                         'message' => 'Successfully Submitted',
                         'ticketData' => $ticketData,
                     ]);
@@ -432,52 +521,53 @@ class CustomerController extends Controller
         $ticketData = [];
         if ($customer_id) {
             $customer = Customer::where('id', $customer_id)->where('walk_in_customer', 1)->first();
-           
+
             if ($customer) {
                 $serviceDetails = ServiceDetail::where('customer_id', $customer->id)
                     ->where('repair_status', 'pending')->get();
                 if ($serviceDetails && sizeof($serviceDetails) > 0) {
                     foreach ($serviceDetails as $service) {
-                        $ticket = Ticket::where('service_detail_id',$service->id)->first();
-                        $billDetail = BillDetail::where('customer_id',$customer->id)->where('service_detail_id',$service->id)
-                                            ->where('ticket_id', $ticket->id)->first();
+                        $ticket = Ticket::where('service_detail_id', $service->id)->first();
+                        $billDetail = BillDetail::where('customer_id', $customer->id)->where('service_detail_id', $service->id)
+                            ->where('ticket_id', $ticket->id)->first();
 
-                                            $ticketData[] = [
-                                                'ticket_id' => $ticket->ticket_id,
-                                                'first_name' => $customer->first_name,
-                                                'last_name' => $customer->last_name,
-                                                'email' => $customer->email,
-                                                'phone' => $customer->phone,
-                                                'device' => $service->device,
-                                                'device_issue' => $service->device_issue,
-                                                'status' => 'pending'
-                                            ];
+                        $ticketData[] = [
+                            'ticket_id' => $ticket->ticket_id,
+                            'first_name' => $customer->first_name,
+                            'last_name' => $customer->last_name,
+                            'email' => $customer->email,
+                            'phone' => $customer->phone,
+                            'device' => $service->device,
+                            'device_issue' => $service->device_issue,
+                            'status' => 'pending'
+                        ];
                     }
                 }
             }
         }
-        return view('user.get_ticket',['ticketData'=> $ticketData]);
+        return view('user.get_ticket', ['ticketData' => $ticketData]);
     }
 
-    public function sendSms(){
+    public function sendSms()
+    {
         $receiverNumber = '+923084544542'; // Replace with the recipient's phone number
         $message = 'Hello'; // Replace with your desired message
 
         $sid = env('TWILIO_SID');
         $token = env('TWILIO_TOKEN');
         $fromNumber = env('TWILIO_FROM');
-    
 
-    try {
-        $client = new Client($sid, $token);
-        $client->messages->create($receiverNumber, [
-            'from' => $fromNumber,
-            'body' => $message
-        ]);
 
-        return 'SMS Sent Successfully.';
-    }catch(Exception $e) {
-        return 'Error: ' . $e->getMessage();
+        try {
+            $client = new Client($sid, $token);
+            $client->messages->create($receiverNumber, [
+                'from' => $fromNumber,
+                'body' => $message
+            ]);
+
+            return 'SMS Sent Successfully.';
+        } catch (Exception $e) {
+            return 'Error: ' . $e->getMessage();
+        }
     }
-}
 }

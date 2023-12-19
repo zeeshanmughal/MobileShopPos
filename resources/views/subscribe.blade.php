@@ -3,84 +3,119 @@
 @section('content')
     <!-- resources/views/subscribe.blade.php -->
 
-    <form id="payment-form" action="{{ url('/subscribe') }}" method="post">
+    <form action="{{ route('subscribe') }}" method="post" id="subscription-form">
         @csrf
-        <input id="card-holder-name" type="text">
-        <div id="card-element">
-            <!-- A Stripe Element will be inserted here. -->
+        <div class="form-group">
+            <label for="cardholder-name">Cardholder Name</label>
+            <input type="text" id="cardholder-name" name="cardholder_name" required>
         </div>
-
-        <!-- Used to display form errors. -->
-        <div id="card-errors" role="alert"></div>
-        <button id="card-button">
-            Update Payment Method
-        </button>
+        <div class="form-group">
+            <label for="card-element">Card Details</label>
+            <div id="card-element"></div>
+        </div>
+        <!-- Additional input fields for card details -->
+        <div class="form-group">
+            <label for="card-expiry">Expiration Date</label>
+            <div id="card-expiry"></div>
+        </div>
+        <div class="form-group">
+            <label for="card-cvc">CVC</label>
+            <div id="card-cvc"></div>
+        </div>
+        <button type="submit">Subscribe</button>
     </form>
 @endsection
 
 
 @push('js')
-    <!-- In your Blade view, e.g., subscribe.blade.php -->
-    <script src="https://js.stripe.com/v3/"></script>
-
-    <!-- Include the script to initialize Stripe Elements -->
-    <script>
-        const stripe = Stripe('{{ config('cashier.key') }}');
-        const elements = stripe.elements();
-        const cardElement = elements.create('card');
-
-        cardElement.mount('#card-element');
-    </script>
-    <script>
-        const cardHolderName = document.getElementById('card-holder-name');
-        const cardButton = document.getElementById('card-button');
-        const clientSecret = cardButton.dataset.secret;
-
-        cardButton.addEventListener('click', async (e) => {
-            const {
-                setupIntent,
-                error
-            } = await stripe.confirmCardSetup(
-                clientSecret, {
-                    payment_method: {
-                        card: cardElement,
-                        billing_details: {
-                            name: cardHolderName.value
-                        }
-                    }
-                }
-            );
-
-            if (error) {
-                // Display "error.message" to the user...
-            } else {
-                // The card has been verified successfully...
-            }
-        });
-    </script>
-    <script>
-// resources/js/your-stripe-js-file.js
-
-document.addEventListener('DOMContentLoaded', function () {
+<script src="https://js.stripe.com/v3/"></script>
+<script>
     var stripe = Stripe('{{ config('cashier.key') }}');
     var elements = stripe.elements();
 
     // Create an instance of the card Element.
-    var card = elements.create('card');
+    var card = elements.create('card', {
+        style: {
+            base: {
+                iconColor: '#666EE8',
+                color: '#31325F',
+                lineHeight: '40px',
+                fontWeight: 300,
+                fontFamily: 'Helvetica Neue, Helvetica, sans-serif',
+                fontSize: '18px',
+                '::placeholder': {
+                    color: '#CFD7E0',
+                },
+            },
+        },
+    });
 
     // Add an instance of the card Element into the `card-element` div.
     card.mount('#card-element');
 
+    // Create an instance of the exp-date Element.
+    var expDate = elements.create('cardExpiry', {
+        style: {
+            base: {
+                iconColor: '#666EE8',
+                color: '#31325F',
+                lineHeight: '40px',
+                fontWeight: 300,
+                fontFamily: 'Helvetica Neue, Helvetica, sans-serif',
+                fontSize: '18px',
+                '::placeholder': {
+                    color: '#CFD7E0',
+                },
+            },
+        },
+    });
+
+    // Add an instance of the exp-date Element into the `card-expiry` div.
+    expDate.mount('#card-expiry');
+
+    // Create an instance of the cvc Element.
+    var cvc = elements.create('cardCvc', {
+        style: {
+            base: {
+                iconColor: '#666EE8',
+                color: '#31325F',
+                lineHeight: '40px',
+                fontWeight: 300,
+                fontFamily: 'Helvetica Neue, Helvetica, sans-serif',
+                fontSize: '18px',
+                '::placeholder': {
+                    color: '#CFD7E0',
+                },
+            },
+        },
+    });
+
+    // Add an instance of the cvc Element into the `card-cvc` div.
+    cvc.mount('#card-cvc');
+
     // Handle form submission.
-    var form = document.getElementById('payment-form');
-    form.addEventListener('submit', function (event) {
+    var form = document.getElementById('subscription-form');
+    form.addEventListener('submit', function(event) {
         event.preventDefault();
 
-        stripe.createPaymentMethod('card', card).then(function (result) {
+        // Disable the submit button to prevent repeated clicks.
+        form.querySelector('button').disabled = true;
+
+        // Create a PaymentMethod using the card Element.
+        stripe.createPaymentMethod({
+            type: 'card',
+            card: card,
+            billing_details: {
+                name: document.getElementById('cardholder-name').value,
+            },
+        }).then(function(result) {
             if (result.error) {
                 // Inform the user if there was an error.
                 var errorElement = document.getElementById('card-errors');
                 errorElement.textContent = result.error.message;
+
+                // Enable the submit button.
+                form.querySelector('button').disabled = false;
             } else {
                 // Send the PaymentMethod ID to your server.
                 stripeTokenHandler(result.paymentMethod);
@@ -88,20 +123,18 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Submit the form with the PaymentMethod ID.
     function stripeTokenHandler(paymentMethod) {
-        // Insert the token ID into the form so it gets submitted to the server.
-        var form = document.getElementById('payment-form');
+        // Insert the PaymentMethod ID into the form so it gets submitted to the server.
         var hiddenInput = document.createElement('input');
         hiddenInput.setAttribute('type', 'hidden');
-        hiddenInput.setAttribute('name', 'paymentMethod');
+        hiddenInput.setAttribute('name', 'payment_method');
         hiddenInput.setAttribute('value', paymentMethod.id);
         form.appendChild(hiddenInput);
 
         // Submit the form.
         form.submit();
     }
-});
 
-
-    </script>
+</script>
 @endpush

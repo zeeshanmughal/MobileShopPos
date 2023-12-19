@@ -1,6 +1,9 @@
 <?php
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+
+
 
 if (!function_exists('admin_asset')) {
     function admin_asset($path)
@@ -35,14 +38,20 @@ if (!function_exists('createSlug')) {
     }
 }
 
-if(!function_exists('saveImage')){
-     function saveImage($image, $folder)
+if (!function_exists('saveImage')) {
+    function saveImage($image, $folder)
     {
-        $imageName = time() . '_' . $image->getClientOriginalName();
-        if (!Storage::exists('public/' . $folder)) {
-            Storage::makeDirectory('public/' . $folder);
-        }
-        $image->storeAs('public/' . $folder, $imageName);
+       // Check if an image was provided
+       if ($image !== null && $image->isValid()) {
+        // Get the original filename
+        $originalName = $image->getClientOriginalName();
+
+        // Sanitize the filename and remove unwanted characters
+        $sanitizedFilename = Str::slug(pathinfo($originalName, PATHINFO_FILENAME));
+        $imageName = time() . '_' . $sanitizedFilename . '.' . $image->getClientOriginalExtension();
+
+        // Move the uploaded file to the desired directory
+        $image->move(public_path('storage/' . $folder), $imageName);
 
         $imagePath = 'storage/' . $folder . '/' . $imageName;
 
@@ -50,5 +59,10 @@ if(!function_exists('saveImage')){
         // For example, you can use Eloquent to save the path to the database
 
         return $imagePath;
+    } else {
+        // Handle the case where no image was provided
+        return null;
+    }
     }
 }
+

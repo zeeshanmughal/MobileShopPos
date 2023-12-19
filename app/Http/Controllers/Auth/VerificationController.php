@@ -1,13 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
+use App\Models\User;
 use App\Models\UserVerify;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Foundation\Auth\VerifiesEmails;
 
 class VerificationController extends Controller
 {
-    //
+
+        
     public function verifyAccount($token)
     {
         $token = $token;
@@ -21,7 +28,9 @@ class VerificationController extends Controller
 
                 $verifyUser->user->is_email_verified = 1;
                 if ($verifyUser->user->save()) {
-                    return view('auth.registration-success', compact('token'));
+                    // return view('auth.registration-success', compact('token'));
+                    $message = "Your e-mail is verified. If you account is approved by Admin, you can now login. ";
+
                 }
                 // Now that the email is verified, check if the trial period has ended
                 if ($user->subscribed('default') && $user->subscription('default')->onTrial()) {
@@ -45,4 +54,40 @@ class VerificationController extends Controller
 
         return redirect()->route('login')->with('message', $message);
     }
+   
+    public function resend_verification_email(Request $request){
+        $userId = $request->user;
+        if($userId){
+           $user =  User::where('id', $userId)->first();
+           if($user && $user->is_email_verified !== 1){
+
+            $userVerify = UserVerify::where('user_id',$user->id)->first();
+            $token = Str::random(64);
+
+            if($userVerify){
+                $userVerify->token = $token;
+                $userVerify->update();
+            }else{
+                UserVerify::create([
+                    'user_id' => $user->id,
+                    'token' => $token
+                ]);
+            }
+
+           
+    
+            Mail::send('emails.email_verification', ['token' => $token], function ($message) use ($user) {
+                $message->to($user->email);
+                $message->subject('Email Verification Mail');
+            });
+
+            return view('auth.registration-success',compact('token','user'))->with('resent',true);
+           }else{
+            return redirect()->route('login');
+        }
+
+    }else{
+        return redirect()->route('login');
+    }
+}
 }

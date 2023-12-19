@@ -28,10 +28,11 @@
                     </div>
                     <div class="card-footer">
                         {{-- <form action="{{ route('user.subscribe', ['planId' => $plan->id]) }}" method="post"> --}}
-                            <form >
+                            {{-- <form >
                             @csrf
                             <button type="submit" class="btn btn-primary">Subscribe</button>
-                        </form>
+                        </form> --}}
+                        <a href="{{ route('user.showSubscribeForm') }}" class="btn btn-primary">Subscribe</a>
                     </div>
                 </div>
             </div>

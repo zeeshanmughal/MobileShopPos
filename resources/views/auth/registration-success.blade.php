@@ -9,11 +9,17 @@
 <body>
     <div style="text-align: center; padding: 20px;">
         <h2>Registration Successful</h2>
+        @if (session('resent'))
+        <div class="alert alert-success" role="alert">
+            {{ __('A fresh verification link has been sent to your email address.') }}
+        </div>
+    @endif
         <p>
             An email has been sent to your address. Please click the verification link in the email to complete the registration process.
         </p>
-        <form method="post" action="{{ route('user.verify',['token' => $token]) }}">
+        <form method="post" action="{{ route('resendVerificationEmail')}}">
             @csrf
+            <input type="hidden" name="user" value={{ $user->id }}>
             <button type="submit">Resend Email</button>
         </form>
     </div>

@@ -14,6 +14,7 @@ use Illuminate\Auth\Events\Registered;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
@@ -58,7 +59,11 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'phone' => ['required', 'regex:/^([0-9\s\-\+\(\)]*)$/', 'min:9'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'business_name' => ['required', 'string', 'max:255'],
+            'business_website' => ['nullable', 'url']
+
         ]);
     }
 
@@ -73,15 +78,17 @@ class RegisterController extends Controller
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
+            'phone' => $data['phone'],
             'password' => Hash::make($data['password']),
+            'business_name' => $data['business_name'],
+            'business_website' => $data['business_website'],
+            'is_email_verified' => 0
         ]);
 
-        // Set the default 30-day trial for the user without a payment method
-        $user->newSubscription('default', 'price_1OIFITL09JSTkbRcRYmp6gvV') // Replace with the actual Stripe Price ID
-            ->trialDays(30) // Set the trial period to 30 days (1 month)
-            ->create();
+
         return $user;
     }
+
 
     protected function registered(Request $request, $user)
 
@@ -97,9 +104,7 @@ class RegisterController extends Controller
             $message->to($user->email);
             $message->subject('Email Verification Mail');
         });
-        return redirect()->route('user.verify', ['token' => $token])->with('message', 'An email has been sent to your provided email address. Please check your inbox and follow the instructions to verify your email.');
-        // return view('auth.registration-success',compact('token'));
+        // return redirect()->route('user.verify', ['token' => $token])->with('message', 'An email has been sent to your provided email address. Please check your inbox and follow the instructions to verify your email.');
+        return view('auth.registration-success',compact('token','user'));
     }
-
-  
 }

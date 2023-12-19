@@ -40,27 +40,22 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    
     protected function authenticated(Request $request, $user)
-    {  
+    {
         if ($user->status == 'active' && $user->is_email_verified == 1) {
-        //    Auth::attempt(['email'=>$user->email,'password'=>$user->password]);
+            //    Auth::attempt(['email'=>$user->email,'password'=>$user->password]);
             return redirect()->route('retailer.dashboard');
-        } 
-        else {
-        
-           
+        } else {
+
+
             if ($user->status != 'active') {
-                return back()->with('info', 'You account is not approved by Admin. Contact to Support or Wait for Approval');
-            } 
+                return redirect()->route('login')->with('error', 'You account is not approved by Admin. Contact to Support or Wait for Approval');
+            }
             if ($user->is_email_verified != 1) {
-                return back()->with('error', 'Your email is not verified. Please check your email for verification instructions.');
+                return redirect()->route('login')->with('error', 'Your email is not verified. Please check your email for verification instructions.');
             }
             Auth::logout();
-            
         }
     }
-
-   
-
- 
 }

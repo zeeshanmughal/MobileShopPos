@@ -25,16 +25,16 @@
                         @else
                             <td>Not Found</td>
                         @endif
-                        @if ($ticket->serviceDetail)
+                        @if ($ticket->serviceDetail && $ticket->serviceDetail->deviceIssue)
                             <!-- Check if serviceDetail is not null -->
-                            <td>{{ $ticket->serviceDetail->device_issue }}</td>
+                            <td>{{ $ticket->serviceDetail->deviceIssue->issue_description }}</td>
                         @else
                             <td>No Device Issue.</td>
                         @endif
 
                         @if ($ticket->serviceDetail)
                             <td>
-                                {{ $ticket->serviceDetail->repair_category }}</td>
+                                {{ $ticket->serviceDetail->device_name }}</td>
                         @else
                             <td> No Repair category.</td>
                         @endif
@@ -56,6 +56,8 @@
                             <div class="form-group ">
                                 <select id="dropdown" name="role" class=" form-control"
                                     onchange="changeStatus(this.value, {{ $ticket->id }})">
+                                    <option value="pending" @if ($ticket->ticket_status == 'pending')  @endif>Pending
+                                        </option>
                                     <option value="in_progress" @if ($ticket->ticket_status == 'in_progress')  @endif>In
                                         Progress</option>
                                     <option value="completed" @if ($ticket->ticket_status == 'awaiting_collection')  @endif>

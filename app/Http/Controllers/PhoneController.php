@@ -2,22 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use PDF;
 use App\Models\Phone;
 use App\Models\Customer;
 use App\Models\BillDetail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Models\CustomerAddress;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use App\Models\CustomerAdditionalInformation;
-use PDF;
 
 class PhoneController extends Controller
 {
     //
     public function createPhoneBuy()
     {
-        return view('retailer.phone_buy');
+        $customers = Customer::all();
+
+        return view('retailer.phone_buy', compact('customers'));
     }
 
     public function storePhoneBuy(Request $request)
@@ -26,63 +30,118 @@ class PhoneController extends Controller
             $licensePath = saveImage($request->driving_license, 'customer_images');
         }
         $validator = Validator::make($request->all(), [
-            'driving_license' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'customer_id' => 'required',
             'email' => 'required|email',
-            'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
-            'first_name' => 'required|alpha',
+            'first_name' => 'required',
             'last_name' => 'required',
-            'customer_group' => 'required',
             'device_model' => 'required',
             'device_brand' => 'required',
             'imei' => 'required',
             'buying_price' => 'required|numeric|min:0',
             'selling_price' => 'required|numeric|min:0',
+
+            'condition' => 'required'
         ]);
-
+        session()->flash('old_email_notification', $request->input('email_notification'));
+        session()->flash('old_sms_notification', $request->input('sms_notification'));
         if ($validator->fails()) {
+            echo($validator->errors());
             return redirect()->back()->withErrors($validator)->withInput();
-        }
-        $customer = Customer::where('id', $request->customer_id)->with('additionalInformation')->first();
-
-        if (!$customer) {
-            return redirect()->back()->with('error', 'Customer not found! Create New Customer');
         } else {
-            if ($request->sms_notification == null) {
-                $sms_notification = 0;
-            } else {
-                $sms_notification = 1;
-            }
-            if ($request->email_notification == null) {
-                $email_notification = 0;
-            } else {
-                $email_notification = 1;
-            }
-            $dataCustomerAdditional = [
-                'driving_license' => $request->driving_licese,
-                'sms_notification' => $sms_notification,
-                'email_notification' => $email_notification,
+            $customer = Customer::where('id', $request->customer_id)->with('additionalInformation')->first();
+            if (!$customer) {
 
-            ];
-            $conditionCustomerAdditional = [
-                'customer_id' => $customer->id
-            ];
-            $customerAdditional = CustomerAdditionalInformation::updateOrCreate($conditionCustomerAdditional, $dataCustomerAdditional);
-
-
-            $phone = new Phone();
-            $phone->user_id = Auth::user()->id;
-            $phone->customer_id = $customer->id;
-            $phone->label_id = Str::random(10);
-            $phone->status = 'buy';
-            $phone->device_model = $request->device_model;
-            $phone->device_brand = $request->device_brand;
-            $phone->imei = $request->imei;
-            $phone->buying_price = $request->buying_price;
-            $phone->sell_price = $request->selling_price;
-            if ($phone->save()) {
-                return redirect()->route('retailer.phones')->with('success', 'Mobile added successfully');
+                return redirect()->back()->with('error', 'Customer not found! Create New Customer');
             } else {
-                return redirect()->route('retailer.phone_buy')->with('error', 'Failed to add phone');
+
+                if ($request->hasFile('driving_license')) {
+                    $drivingLicenseFilePath = saveImage($request->file('driving_license'), 'customer_identity_images');
+                    if ($customer->driving_license) {
+                        
+                        $previousLicenseFile = $customer->driving_license;
+                   
+                        session()->flash('image_path', $drivingLicenseFilePath);
+                        if (File::exists($previousLicenseFile)) {
+                            File::delete($previousLicenseFile);
+                        }
+                    }
+                } elseif ($customer->driving_license) {
+                    $drivingLicenseFilePath = $customer->driving_license;
+                } else {
+                    $drivingLicenseFilePath = null;
+                }
+
+                $dataCustomer = [
+                    'first_name' => $request->first_name,
+                    'last_name' => $request->last_name,
+                    'email' => $request->email,
+                    'country_code' => $request->country_code,
+                    'phone' => $request->phone,
+                    'driving_license' => $drivingLicenseFilePath,
+                ];
+
+                $conditionCustomer = [
+                    'id' => $customer->id
+                ];
+                $customer =  Customer::updateOrCreate($conditionCustomer, $dataCustomer);
+
+                $dataCustomerAddress = [
+                    'street_address' => $request->street_address,
+                    'house_number' => $request->house_number,
+                    'city' => $request->city,
+                    'state' => $request->state,
+                    'postcode' => $request->postcode,
+                    'country' => $request->country,
+                    'location' => $request->location,
+
+                ];
+                $conditionCustomerAddress = [
+                    'customer_id' => $customer->id
+                ];
+
+                $customerAddress =  CustomerAddress::updateOrCreate($conditionCustomerAddress, $dataCustomerAddress);
+
+                if ($request->sms_notification == null) {
+                    $sms_notification = 0;
+                } else {
+                    $sms_notification = 1;
+                }
+                if ($request->email_notification == null) {
+                    $email_notification = 0;
+                } else {
+                    $email_notification = 1;
+                }
+                $dataCustomerAdditional = [
+                    'driving_license' => $request->driving_licese,
+                    'sms_notification' => $sms_notification,
+                    'email_notification' => $email_notification,
+
+                ];
+                $conditionCustomerAdditional = [
+                    'customer_id' => $customer->id
+                ];
+                $customerAdditional = CustomerAdditionalInformation::updateOrCreate($conditionCustomerAdditional, $dataCustomerAdditional);
+
+
+                $phone = new Phone();
+                $phone->user_id = Auth::user()->id;
+                $phone->customer_id = $customer->id;
+                $phone->label_id = Str::random(10);
+                $phone->status = 'buy';
+                $phone->device_model = $request->device_model;
+                $phone->device_brand = $request->device_brand;
+                $phone->imei = $request->imei;
+                $phone->mobile_pin = $request->mobile_pin;
+
+                $phone->buying_price = $request->buying_price;
+                $phone->sell_price = $request->selling_price;
+                $phone->phone_condition = $request->condition;
+
+                if ($phone->save()) {
+                    return redirect()->route('retailer.phones')->with('success', 'Mobile added successfully');
+                } else {
+                    return redirect()->route('retailer.phone_buy')->with('error', 'Failed to add phone');
+                }
             }
         }
     }
@@ -93,6 +152,10 @@ class PhoneController extends Controller
         return view('retailer.phones', compact('phones'));
     }
 
+
+    public function updatePhoneTrail(Request $request){
+        dd($request->all());
+    }
     public function createPhoneSell()
     {
         return view('retailer.phone_sell');
@@ -120,29 +183,28 @@ class PhoneController extends Controller
     public function sellPhoneStore(Request $request)
     {
         dd($request);
-        $phone = Phone::where('id',$request->phone_id)->first();
-        if($phone){
+        $phone = Phone::where('id', $request->phone_id)->first();
+        if ($phone) {
             $phone->status = 'sold';
-            if($phone->save()){
+            if ($phone->save()) {
                 $billDetails = new BillDetail();
                 $billDetails->phone_id = $phone->id;
                 $billDetails->customer_id = $phone->customer_id;
-                $billDetails->user_id = $phone->user_id; 
+                $billDetails->user_id = $phone->user_id;
                 $billDetails->service_detail_id = 0;
                 $billDetails->price = $request->sell_price;
 
                 $billDetails->bill_for = 'mobile_sell';
                 $billDetails->discount = $request->discount;
                 $billDetails->total_price = $request->total_price;
-                if($billDetails->save()){
+                if ($billDetails->save()) {
                     $pdf = PDF::loadView('retailer.print_bill', compact('billDetails'));
 
                     // Download the PDF or display it in the browser
                     return $pdf->stream('receipt.pdf');
                 }
-
             }
         }
-        return redirect()->back()->with('success','Phone details saved successfully');
+        return redirect()->back()->with('success', 'Phone details saved successfully');
     }
 }

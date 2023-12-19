@@ -1,10 +1,37 @@
 @extends('layouts.retailer')
 
-
 @section('content')
-<h3>Customers</h3>
+@include('retailer.partials.response_message')
+<div class="container mb-3">
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Customers</h4>
+        </div>
+        <div class="col-md-6 text-md-right">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <form action="{{ route('customers.index') }}" method="GET" class="">
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control" placeholder="Search">
+                            <div class="input-group-append mr-2">
+                                <button type="submit" class="btn btn-outline-info">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-2 text-right">
+                    <a href="{{ route('customer.create')}}" class="btn btn-info ml-2" data-toggle="tooltip" data-placement="bottom" title="Add Customer">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @if(count($customers) > 0)
-    <table class="table">
+    <table class="table ">
         <thead>
             <tr>
                 <th>First Name</th>
@@ -43,8 +70,11 @@
     </div>
 
 @else
-    <p>No customers found.</p>
+<div class="card">
+    <div class="card-body">
+        <strong>No customers found.</strong>
+    </div>
+</div>
 @endif
-
 
 @endsection

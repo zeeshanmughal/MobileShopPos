@@ -3,8 +3,8 @@
 @section('content')
 
     <!-- Page Heading -->
-    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800">Retailer Dashboard</h1>
+    <div class="d-sm-flex align-items-left justify-content-between mb-4">
+        <h2 class="h3 mb-0 text-gray-800">Retailer Dashboard</h2>
         {{-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
                 class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> --}}
     </div>
@@ -12,16 +12,17 @@
     <!-- Content Row -->
     <div class="row">
         <div class="col-md-12">
+            <div class="card m-3 p-3">
             @if (auth()->user()->subscribed('default'))
                 @if (auth()->user()->subscription('default')->trial_ends_at) 
             
-                    <p>Next billing date: {{ auth()->user()->subscription('default')->trial_ends_at->format('M d, Y') }}</p>
-                    <p>Days left until expiration:
+                    <p>Next billing date: {{ auth()->user()->subscription('default')->trial_ends_at->format('M d, Y') }}
+                    | Days left until expiration:
                         {{ now()->diffInDays(auth()->user()->subscription('default')->trial_ends_at) }} <a href="{{ route('subscriptionPlans.show') }}"><strong class="ml-3">Click here to Subscribe </strong></a></p>
                         
                 @else
-                    <p>Next billing date: Not available</p>
-                    <p>Days left until expiration: Not available <a href="{{ route('subscriptionPlans.show') }}"><strong class="ml-3">Click here to Subscribe</strong></a></p>
+                    <p>Next billing date: Not available |
+                    Days left until expiration: Not available <a href="{{ route('subscriptionPlans.show') }}"><strong class="ml-3">Click here to Subscribe</strong></a></p>
                     
                 @endif
                 <!-- Access more subscription properties as needed -->
@@ -29,7 +30,7 @@
                 <p>You are not subscribed. <a href="{{ route('subscriptionPlans.show') }}"><strong class="ml-3">Click here to Subscribe</strong></a></p>
             @endif
 
-
+            </div>
         </div>
     </div>
     <div class="row">

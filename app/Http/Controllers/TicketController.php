@@ -44,6 +44,7 @@ class TicketController extends Controller
 
     public function updateTicketStatus(Request $request)
     {
+        
         $ticketId = $request->input('ticketId');
         $status = $request->input('status');
        
@@ -78,11 +79,11 @@ class TicketController extends Controller
 
     public function tickets()
     {
-        $allTickets = Ticket::with('serviceDetail')->get();
-        $pendingTickets = Ticket::with('serviceDetail')->where('ticket_status', 'pending')->get();
-        $inProgressTickets = Ticket::with('serviceDetail')->where('ticket_status', 'in_progress')->get();
-        $completedTickets = Ticket::with('serviceDetail')->where('ticket_status', 'completed')->get();
-
+        $allTickets = Ticket::with(['serviceDetail.deviceIssue','customer'])->orderBy('id','desc')->get();
+        $pendingTickets = Ticket::with(['serviceDetail.deviceIssue','customer'])->where('ticket_status', 'pending')->orderBy('id','desc')->get();
+        $inProgressTickets = Ticket::with(['serviceDetail.deviceIssue','customer'])->where('ticket_status', 'in_progress')->orderBy('id','desc')->get();
+        $completedTickets = Ticket::with(['serviceDetail.deviceIssue','customer'])->where('ticket_status', 'completed')->orderBy('id','desc')->get();
+        
         return view('retailer.tickets.index', compact('allTickets', 'pendingTickets', 'inProgressTickets', 'completedTickets'));
     }
 
@@ -109,11 +110,10 @@ class TicketController extends Controller
         }
 
         // Assuming you have a relationship between Ticket and Customer
-        $ticketsQuery->with('customer','serviceDetail');
-
+        $ticketsQuery->with('serviceDetail.deviceIssue','customer');
+        
         // Get the final result
-        $tickets = $ticketsQuery->get();
-
+        $tickets = $ticketsQuery->orderBy('id','desc')->get();
         return response()->json(['tickets' => $tickets]);
     }
 
