@@ -51,9 +51,9 @@ if (!function_exists('saveImage')) {
         $imageName = time() . '_' . $sanitizedFilename . '.' . $image->getClientOriginalExtension();
 
         // Move the uploaded file to the desired directory
-        $image->move(public_path('storage/' . $folder), $imageName);
+        $image->move(public_path('shop_retailer/' . $folder), $imageName);
 
-        $imagePath = 'storage/' . $folder . '/' . $imageName;
+        $imagePath = 'shop_retailer/' . $folder . '/' . $imageName;
 
         // Additional logic for storing in the database here
         // For example, you can use Eloquent to save the path to the database

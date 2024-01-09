@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Stripe\Price;
 
 class ItemController extends Controller
 {
@@ -27,12 +28,15 @@ class ItemController extends Controller
             'item_name' => 'required',
             'item_category' => 'required',
             'sku' => 'required',
+            'quantity'=>'required|min:0',
+            'price'=>'required||min:1'
             // Add validation rules for other fields here
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+
         if($request->image){
             $image_path = saveImage($request->image, 'items');
 
@@ -44,6 +48,8 @@ class ItemController extends Controller
             'manufacturer' => $request->manufacturer,
             'sub_category' => $request->sub_category,
             'short_description' => $request->short_description,
+            'quantity'=>$request->quanity,
+            'price'=>$request->price,
             'image' => $image_path
         ]);
 
@@ -72,8 +78,12 @@ class ItemController extends Controller
 
     public function update(Request $request, $id)
     {
-        $validatedData = $request->validate([
-         'sku'=>'required',
+        $validator = Validator::make($request->all(), [
+            'item_name' => 'required',
+            'item_category' => 'required',
+            'sku' => 'required',
+            'quantity'=>'required|min:0',
+            'price'=>'required|min:1'
             // Add validation rules for other fields here
         ]);
 
@@ -94,6 +104,8 @@ class ItemController extends Controller
             'manufacturer' => $request->manufacturer,
             'sub_category' => $request->sub_category,
             'short_description' => $request->short_description,
+            'quantity'=>$request->quantity,
+            'price'=>$request->price,
             'image' => $image_path
         ];
 

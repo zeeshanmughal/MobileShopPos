@@ -5,6 +5,7 @@ use App\Models\Customer;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PosController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Session;
@@ -19,6 +20,7 @@ use App\Http\Controllers\RetailerController;
 use App\Http\Controllers\TeamMemberController;
 use Twilio\Rest\Events\V1\SubscriptionContext;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\ManufacturerController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -87,7 +89,7 @@ Route::group(['middleware' => ['retailer.auth','is_verify_email']], function () 
     // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/retailer/dashboard', [RetailerController::class, 'dashboard'])->name('retailer.dashboard');
     Route::get('/customer/create', [RetailerController::class, 'customers'])->name('customer.create');
-    Route::get('/customer/search', [RetailerController::class, 'customers'])->name('customer.search');
+    Route::get('/customer/search', [RetailerController::class, 'search_customer'])->name('customer.search');
     
     Route::get('/walk-in-customer/create', [RetailerController::class, 'walkInByRetailer'])->name('walkInByRetailer.create');
     Route::post('/walk-in-customer/service-details', [RetailerController::class, 'serviceDetailStore'])->name('service-detail.store');
@@ -96,7 +98,7 @@ Route::group(['middleware' => ['retailer.auth','is_verify_email']], function () 
 
     // Customers Routes
 
-    Route::get('customers', [CustomerController::class, 'index'])->name('customers.index');
+    Route::get('/customers', [CustomerController::class, 'index'])->name('customers.index');
 
     Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
     Route::get('/customers/{id}', [CustomerController::class, 'edit'])->name('customers.edit');
@@ -132,6 +134,9 @@ Route::group(['middleware' => ['retailer.auth','is_verify_email']], function () 
 
 
     Route::resource('/categories', CategoryController::class)->except(['show']);
+    Route::resource('/manufacturers', ManufacturerController::class)->except(['show']);
+
+    Route::get('/pos/{category?}',[PosController::class,'index'])->name('pos.index');
 
     Route::get('/subscribe', [SubscriptionController::class, 'showSubscriptionForm'])->name('user.showSubscribeForm');
     Route::post('/direct-debit-setup', [SubscriptionController::class, 'handleDirectDebitSetup'])->name('direct.debit.setup');

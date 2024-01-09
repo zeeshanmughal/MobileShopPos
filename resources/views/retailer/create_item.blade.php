@@ -1,11 +1,11 @@
 @extends('layouts.retailer')
 
 @section('content')
-@if(session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
+@include('retailer.partials.response_message')
+
+
+
+
 <div class="">
     <div class="form-wrap">	
         <form id="itemForm" method="POST" action="{{ isset($item) ? route('item.update', $item->id) : route('item.store') }}" enctype="multipart/form-data">
@@ -18,12 +18,7 @@
                     <h4 class="text-gray-900 font-weight-bold">Add New Item</h4> <hr>
                 </div>
                 <input type="hidden" name="save_and_add_new" value="0">
-                <div class="col-md-5 text-right">                    
-                    <button type="submit" class="btn bg-gradient-primary text-white py-1" >{{ isset($item)? 'Update Item': 'Save Item'  }}</button>
-                    @if(!isset($item))
-                    <button type="submit" value="1"  name="save_and_add_new" id="saveAndAddNewButton" class="btn bg-gray-300 text-dark py-1">Save and Add New</button>
-                    @endif
-                </div>
+            
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="sku">SKU</label>
@@ -55,7 +50,7 @@
                             <option disabled selected value>Select Category</option>
                             @if(sizeof($categories) > 0)
                             @foreach($categories as $c => $cat)
-                            <option value="{{ $cat->name }}" {{ (isset($item) && $item->item_category === $cat->name) ? 'selected' : (old('item_category') === $cat->name ? 'selected' : '') }}>{{ $cat->name }}</option>
+                            <option value="{{ $cat->id }}" {{ (isset($item) && $item->item_category === $cat->id) ? 'selected' : (old('item_category') === $cat->name ? 'selected' : '') }}>{{ $cat->name }}</option>
 
                             @endforeach
                             @else
@@ -79,9 +74,30 @@
                     <div class="form-group">
                         <label>Manufacturer</label>
                         <input type="text" name="manufacturer" id="manufacturer" class="form-control" value="{{isset($item) ?  $item->manufacturer : old('manufacturer') }}">
-                     
+                        @if ($errors->has('manufacturer'))
+                        <span class="text-danger">{{ $errors->first('manufacturer') }}</span>
+                        @endif
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" name="quantity" id="itemQuantityInput" class="form-control" value="{{isset($item) ?  $item->quantity : old('quantity') }}" min="0" required>
+                        @if ($errors->has('quantity'))
+                        <span class="text-danger">{{ $errors->first('quantity') }}</span>
+                        @endif
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Price</label>
+                        <input type="number" name="price" id="itemPriceInput" class="form-control" value="{{isset($item) ?  $item->price : old('price') }}" min="0" required>
+                        @if ($errors->has('price'))
+                        <span class="text-danger">{{ $errors->first('price') }}</span>
+                        @endif
+                    </div>
+                </div>
+
                 <div class="col-md-6">
                     <div class="form-group Picture_2">
                          <label for="">Picture (2MB)</label>
@@ -97,6 +113,12 @@
                 </div>
                
             
+            </div>
+            <div class="col-md-12 text-right">                    
+                <button type="submit" class="btn bg-gradient-primary text-white py-1" >{{ isset($item)? 'Update Item': 'Save Item'  }}</button>
+                @if(!isset($item))
+                <button type="submit" value="1"  name="save_and_add_new" id="saveAndAddNewButton" class="btn bg-gray-300 text-dark py-1">Save and Add New</button>
+                @endif
             </div>
         </form>
     </div>	

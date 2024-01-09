@@ -39,6 +39,7 @@ class RetailerController extends Controller
         return view('retailer.customer_create');
     }
 
+   
     public function walkInByRetailer(){
         $deviceIssues = DeviceIssue::all();
         $inventoryItems = Item::all();

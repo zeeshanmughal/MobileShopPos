@@ -1,12 +1,35 @@
 @extends('layouts.retailer')
 
 @section('content')
-    @if (session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+@include('retailer.partials.response_message')
 
+
+<div class="container mb-3">
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Items</h4>
+        </div>
+        <div class="col-md-6 text-md-right">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <form action="{{ route('items.index') }}" method="GET" class="">
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control" placeholder="Search">
+                            <div class="input-group-append mr-2">
+                                <button type="submit" class="btn btn-outline-info">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-2 text-right">
+                    <a href="{{ route('item.create')}}" class="btn btn-info ml-2" data-toggle="tooltip" data-placement="bottom" title="Add Item">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <table class="table">
         <thead>
@@ -15,6 +38,7 @@
                 <th>Device Model</th>
                 <th>Manufacturer</th>
                 <th>Warranty</th>
+                <th>Quantity</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -26,6 +50,8 @@
                         <td>{{ $item->device_model }}</td>
                         <td>{{ $item->manufacturer }}</td>
                         <td>{{ $item->warranty }}</td>
+                        <td>{{ $item->quantity }}</td>
+
                         <td>
                             <a  data-item-id="{{ $item->id }}" class="btn btn-primary view-item " data-toggle="tooltip" title="View Item" style="font-size: 12px;">
                                 <i class="fas fa-eye"></i>
@@ -88,6 +114,7 @@
     $('.view-item').on('click', function (e) {
         e.preventDefault();
         var itemId = $(this).data('item-id');
+        var imageUrl = null;
         console.log(itemId);
         $.ajax({
             type: 'GET',
@@ -96,7 +123,10 @@
                 console.log(data);
                 var itemDetails = data;
                 console.log('item----detail----',itemDetails);
-                var imageUrl = window.location.origin.'/public/'.${itemDetails.image}
+                if(itemDetails.image){
+                     imageUrl = window.location.origin+'/'+itemDetails.image
+
+                }
                 var detailsHTML = `
                 <p>SKU: ${itemDetails.sku}</p>
                     <p>Item Name: ${itemDetails.item_name}</p>
@@ -105,6 +135,8 @@
                     <p>Manufacturer: ${itemDetails.manufacturer}</p>
                     <p>Sub Category: ${itemDetails.sub_category}</p>
                     <p>Short Description: ${itemDetails.short_description}</p>
+                    <p>Short Description: ${itemDetails.short_description}</p>
+
                     <img src="${imageUrl}" alt="Item Image" style="max-width: 100px; max-height: 100px;">
 
                 `;

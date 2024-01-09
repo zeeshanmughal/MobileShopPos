@@ -16,7 +16,7 @@
 
             <ul class="list-group list-group-flush">
             @foreach($categories as $category)
-                <li class="list-group-item d-flex justify-content-between align-items-center"> <span> {{ $category->name }}</span> - <span><a href="{{ route('categories.edit', $category->id) }}" class="btn btn-info btn-sm">Edit</a>
+                <li class="list-group-item d-flex justify-content-between align-items-center"> <span> {{ $category->name }}</span>  <span><a href="{{ route('categories.edit', $category->id) }}" class="btn btn-info btn-sm">Edit</a>
                     <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display: inline;">
                         @csrf
                         @method('DELETE')

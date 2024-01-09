@@ -112,6 +112,14 @@
                 <span>WalkIn Service detail </span>
             </a>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link " href="{{ route('pos.index') }}" 
+                aria-expanded="true" aria-controls="collapseTickets">
+                <i class="fas fa-fw fa-cog"></i>
+                <span>POS </span>
+            </a>
+            </li>
             {{-- <li class="nav-item">
                 <a class="nav-link" href="{{ route('retailer.items') }}">
                     <i> </i>
@@ -135,28 +143,24 @@
                 </div>
             </li>
 
-            
-            <li class="nav-item">
-                <a class="nav-link " href="{{ url('/categories') }}" 
-                aria-expanded="true" aria-controls="collapseTickets">
-                <i class="fas fa-fw fa-cog"></i>
-                <span>Categories</span>
-            </a>
-            </li>
+        
 
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseItems"
                     aria-expanded="true" aria-controls="collapseItems">
                     <i class="fas fa-fw fa-cog"></i>
-                    <span>Items</span>
+                    <span>Inventory</span>
                 </a>
                 <div id="collapseItems" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        <h6 class="collapse-header">Item Components:</h6>
-                        <a class="collapse-item" href="{{ route('item.create') }}">Add Item</a>
+                        <h6 class="collapse-header">Item </h6>
                         <a class="collapse-item" href="{{ route('items.index') }}">Items</a>
+                        <a class="collapse-item" href="{{ route('categories.index') }}">Categories</a>
+                        <a class="collapse-item" href="{{ route('manufacturers.index') }}">Manufacturers</a>
+
                     </div>
                 </div>
+         
             </li>
 
             <li class="nav-item">

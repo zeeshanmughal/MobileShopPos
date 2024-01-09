@@ -19,7 +19,7 @@
         </p>
         <form method="post" action="{{ route('resendVerificationEmail')}}">
             @csrf
-            <input type="hidden" name="user" value={{ $user->id }}>
+            <input type="hidden" name="user" value={{$user->id}}>
             <button type="submit">Resend Email</button>
         </form>
     </div>
