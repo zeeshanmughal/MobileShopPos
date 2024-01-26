@@ -38,7 +38,71 @@ class RetailerController extends Controller
     public function customers(){
         return view('retailer.customer_create');
     }
-
+    
+    public function home(){
+        return view('retailer.home');
+    }
+    public function pos_data(){
+        return view('retailer.pos_data');
+    }
+    public function buy_sell(){
+        return view('retailer.buy_sell');
+    }
+    public function buy_trade(){
+        return view('retailer.buy_trade');
+    }
+    public function customers_detail(){
+        return view('retailer.customers_detail');
+    }
+    public function appointments(){
+        return view('retailer.appointments');
+    }
+    public function supplier(){
+        return view('retailer.supplier');
+    }
+    public function new_supplier(){
+        return view('retailer.new_supplier');
+    }
+    public function transactions(){
+        return view('retailer.transactions');
+    }
+    public function category(){
+        return view('retailer.category');
+    }
+    public function product(){
+        return view('retailer.product');
+    }
+    public function new_product(){
+        return view('retailer.new_product');
+    }
+    public function edit_product(){
+        return view('retailer.edit_product');
+    }
+    public function product_detail(){
+        return view('retailer.product_detail');
+    }
+    public function low_stock(){
+        return view('retailer.low_stock');
+    }
+    public function pending_return(){
+        return view('retailer.pending_return');
+    }
+    public function sale_list(){
+        return view('retailer.sale_list');
+    }
+    public function notifications(){
+        return view('retailer.notifications');
+    }
+    public function notes(){
+        return view('retailer.notes');
+    }
+    // public function notifications(){
+    //     return view('retailer.notifications');
+    // }
+    // 
+    
+    
+    
    
     public function walkInByRetailer(){
         $deviceIssues = DeviceIssue::all();

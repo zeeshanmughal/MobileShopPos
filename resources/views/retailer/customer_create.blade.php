@@ -10,7 +10,84 @@
 @endpush
 @section('content')
     <div class="">
-        <div class="form-wrap">
+            <div class="w-50 m-auto">
+                <div class="newticket">
+                    <h5 class="position-relative cutomerInformation">Customer Information</h5>
+                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="pills-home-tab" data-toggle="pill" data-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Existing Customer</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills-profile-tab" data-toggle="pill" data-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">New Customer</button>
+                    </li>
+                    </ul>
+                    <div class="tab-content" id="pills-tabContent">
+                        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+                            <form>
+                                <div class="form-group py-3">
+                                    <input type="text" class="form-control" id="" placeholder="Search by name, email and phone number">
+                                </div>
+                                <button class="btn btn-primary rounded-pill w-100">Create Ticket</button>
+                            </form>
+                        </div>
+                        <!-- new ticket -->
+                        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+                            <!-- radiobutton tabs -->
+                                <div class="form-check form-check-inline">
+                                        <input class="form-check-input" checked type="radio" onclick="show2();" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                                        <label class="form-check-label" for="inlineRadio1">Individual</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" onclick="show3();" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                                    <label class="form-check-label" for="inlineRadio2">Business</label>
+                                </div>
+                            <!-- radio button tabs ends here -->
+                                <!-- INDIVIDUAL form -->
+                                <form  id="div1">
+                                    <div class="form-group">
+                                        <label for="">Name</label>
+                                        <input type="text" class="form-control" id="" placeholder="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Mail</label>
+                                        <input type="text" class="form-control" id="" placeholder="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Mobile No.</label>
+                                        <input type="text" class="form-control" id="" placeholder="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Notes</label>
+                                        <textarea type="text" class="form-control" id="" placeholder=""></textarea>
+                                    </div>
+                                    <button class="btn btn-primary mt-3 rounded-pill w-100">Create Ticket</button>
+                                </form>
+                                <!-- BUSINESS FORM -->
+                                <form id="div2" class="hide">
+                                    <div class="form-group">
+                                        <label for="">Company Name</label>
+                                        <input type="text" class="form-control" id="" placeholder="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Mail</label>
+                                        <input type="text" class="form-control" id="" placeholder="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Mobile No.</label>
+                                        <input type="text" class="form-control" id="" placeholder="">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">Notes</label>
+                                        <textarea type="text" class="form-control" id="" placeholder=""></textarea>
+                                    </div>
+                                    <button class="btn btn-primary mt-3 rounded-pill w-100">Create Ticket</button>
+                                </form>
+                        </div>
+                        
+                    </div>
+            </div>
+        </div>
+        <div class="form-wrap d-none">
             <form id="customerForm" method="POST" action="{{ route('customers.store') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="row">
@@ -283,7 +360,17 @@
 
 @push('js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+    <script> 
+        function show2(){
+        document.getElementById('div1').style.display = 'block';
+        document.getElementById('div2').style.display ='none'; 
+        }
 
+        function show3(){
+        document.getElementById('div1').style.display ='none';
+        document.getElementById('div2').style.display = 'block'; 
+        } 
+    </script>
     <script>
         var fileInput = document.getElementById('image');
         var cameraFeed = document.getElementById('cameraFeed');

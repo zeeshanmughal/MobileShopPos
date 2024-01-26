@@ -17,4 +17,8 @@ class PosController extends Controller
    
        return view('retailer.pos.index',compact('categories', 'items', 'category'));
     }
+    // public function pos(){
+    //     return view('retailer.pos.pos');
+    // }
+    
 }

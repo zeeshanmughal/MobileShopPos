@@ -41,7 +41,11 @@ class TicketController extends Controller
         // Do something with the filtered records
         return view('your_view', compact('filteredRecords'));
     }
-
+    
+    public function new_tickets(){
+        return view('retailer.tickets.new_tickets');
+    }
+    
     public function updateTicketStatus(Request $request)
     {
         

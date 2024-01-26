@@ -1,17 +1,15 @@
 <div class="card-body" id = "tickets">
-    <div class="table-responsive">
+    <div class="table-responsive ticket-table">
         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
             <thead>
                 <tr>
-                    <th>Ticket #</th>
-                    <th>Customer Name</th>
-
-                    <th>Task</th>
-                    <th>Type</th>
-                    <th>Device</th>
+                    <th>#</th>
                     <th>Status</th>
-                    <th>Action</th>
-                    <th>Print</th>
+                    <th>Booked</th>
+                    <th>Device</th>
+                    <th>Program Type</th>
+                    <th>Customer</th>
+                    <th>Time Remaining</th>
                 </tr>
             </thead>
             <tbody>

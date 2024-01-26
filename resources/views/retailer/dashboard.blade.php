@@ -2,123 +2,79 @@
 
 @section('content')
 
-    <!-- Page Heading -->
-    <div class="d-sm-flex align-items-left justify-content-between mb-4">
-        <h2 class="h3 mb-0 text-gray-800">Retailer Dashboard</h2>
-        {{-- <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a> --}}
-    </div>
-
     <!-- Content Row -->
+  
     <div class="row">
-        <div class="col-md-12">
-            <div class="card m-3 p-3">
-            @if (auth()->user()->subscribed('default'))
-                @if (auth()->user()->subscription('default')->trial_ends_at) 
-            
-                    <p>Next billing date: {{ auth()->user()->subscription('default')->trial_ends_at->format('M d, Y') }}
-                    | Days left until expiration:
-                        {{ now()->diffInDays(auth()->user()->subscription('default')->trial_ends_at) }} <a href="{{ route('subscriptionPlans.show') }}"><strong class="ml-3">Click here to Subscribe </strong></a></p>
-                        
-                @else
-                    <p>Next billing date: Not available |
-                    Days left until expiration: Not available <a href="{{ route('subscriptionPlans.show') }}"><strong class="ml-3">Click here to Subscribe</strong></a></p>
-                    
-                @endif
-                <!-- Access more subscription properties as needed -->
-            @else
-                <p>You are not subscribed. <a href="{{ route('subscriptionPlans.show') }}"><strong class="ml-3">Click here to Subscribe</strong></a></p>
-            @endif
-
-            </div>
-        </div>
-    </div>
-    <div class="row">
-
-        <!-- Earnings (Monthly) Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-primary shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                Total Customers</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_customers }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-gray-300"></i>
-                        </div>
+        <div class="col-md-7">
+            <div class="row">
+                <div class="col-md-4  text-center col-sm-6">
+                    <div class="shadow-sm retailer-card py-3 ">
+                        <h2>0</h2>
+                        <p>Open Tickets</p>
+                    </div>
+                </div>
+                <div class="col-md-4  text-center col-sm-6">
+                    <div class="shadow-sm retailer-card py-3 ">
+                        <h2>0</h2>
+                        <p>Open Tickets</p>
+                    </div>
+                </div>
+                <div class="col-md-4  text-center col-sm-6">
+                    <div class="shadow-sm retailer-card py-3 ">
+                        <h2>0</h2>
+                        <p>Open Tickets</p>
+                    </div>
+                </div>
+                </div>
+                <div class="row mt-3">
+                <div class="col-md-4  text-center col-sm-6">
+                    <div class="shadow-sm retailer-card py-3 ">
+                        <h2>0</h2>
+                        <p>Open Tickets</p>
+                    </div>
+                </div>
+                <div class="col-md-4  text-center col-sm-6">
+                    <div class="shadow-sm retailer-card py-3 ">
+                        <h2>0</h2>
+                        <p>Open Tickets</p>
+                    </div>
+                </div>
+                <div class="col-md-4  text-center col-sm-6">
+                    <div class="shadow-sm retailer-card py-3 ">
+                        <h2>0</h2>
+                        <p>Open Tickets</p>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Earnings (Monthly) Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-success shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                Total Walkin Cutomers</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $total_walkin }}</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Earnings (Monthly) Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Total Items
-                            </div>
-                            <div class="row no-gutters align-items-center">
-                                <div class="col-auto">
-                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">{{ $total_items }}</div>
-                                </div>
-                                <div class="col">
-                                    <div class="progress progress-sm mr-2">
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: 50%"
-                                            aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pending Requests Card Example -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-100 py-2">
-                <div class="card-body">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Pending Requests</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-comments fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
+        <div class="col-md-5 text-center">
+            <div class="widget">
+                <div id="chart" class="chart-container"></div>
             </div>
         </div>
     </div>
 
     <!-- Content Row -->
+    <div class="row mt-4">
+        <div class="col-xl-4 col-md-6 col-12">
+            <div class="card border-grey mb-3 border-top-primary shadow ">
+                <div class="card-header bg-transparent text-dark font-weight-bold">Text Outstanding</div>
+                <div class="card-body bg-transparent py-3 text-center">Nothing to show here</div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6 col-12">
+            <div class="card border-grey mb-3 border-top-primary shadow ">
+                <div class="card-header bg-transparent text-dark font-weight-bold">Text Outstanding</div>
+                <div class="card-body bg-transparent py-3 text-center">Nothing to show here</div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-md-6 col-12">
+            <div class="card border-grey mb-3 border-top-primary shadow ">
+                <div class="card-header bg-transparent text-dark font-weight-bold">Text Outstanding</div>
+                <div class="card-body bg-transparent py-3 text-center">Nothing to show here</div>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
 

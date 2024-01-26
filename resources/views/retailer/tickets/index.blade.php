@@ -12,35 +12,35 @@
         </div>
     @endif
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-9">
+            <ul class="nav nav-tabs border-0 ticket-header" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="all-tab" data-toggle="tab" data-target="#all" type="button"
+                        role="tab" aria-controls="all" aria-selected="true">Status</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pending-tab" data-toggle="tab" data-target="#pending" type="button"
+                        role="tab" aria-controls="pending" aria-selected="true">Show Everything</button>
+                </li>
+                <li class="nav-item ml-3" role="presentation">
+                    <button class="nav-link " id="progress-tab" data-toggle="tab" data-target="#progress" type="button"
+                        role="tab" aria-controls="progress" aria-selected="false">Show Overdue Tickets</button>
+                </li>
+                <!-- <li class="nav-item" role="presentation">
+                    <button class="nav-link " id="complete-tab" data-toggle="tab" data-target="#complete" type="button"
+                        role="tab" aria-controls="complete" aria-selected="false">Complete</button>
+                </li> -->
+            </ul>
         </div>
-        <div class="col-md-6 ">
+        <div class="col-md-3 ">
             <div class="form-group">
-
-                <input type="text" id="search" class="form-control" placeholder="Enter Ticket Number or Customer Name">
+                <input type="text" id="search" class="form-control border-primary" placeholder="Search">
             </div>
         </div>
     </div>
-    <div class="bg-white shadow-sm">
-        <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="all-tab" data-toggle="tab" data-target="#all" type="button"
-                    role="tab" aria-controls="all" aria-selected="true">All Tickets</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="pending-tab" data-toggle="tab" data-target="#pending" type="button"
-                    role="tab" aria-controls="pending" aria-selected="true">Pending</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="progress-tab" data-toggle="tab" data-target="#progress" type="button"
-                    role="tab" aria-controls="progress" aria-selected="false">In Progress</button>
-            </li>
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="complete-tab" data-toggle="tab" data-target="#complete" type="button"
-                    role="tab" aria-controls="complete" aria-selected="false">Complete</button>
-            </li>
-        </ul>
-        <div class="tab-content" id="myTabContent">
+    <div class="bg-white mt-3">
+        
+        <div class="tab-content mt-4 px-0" id="myTabContent">
             <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all">
                 <div class="card shadow mb-4">
                     @include('retailer.tickets.table', ['tickets' => $allTickets])
@@ -49,6 +49,7 @@
             <div class="tab-pane fade" id="pending" role="tabpanel" aria-labelledby="pending">
                 <div class="card shadow mb-4">
                     @include('retailer.tickets.table', ['tickets' => $pendingTickets])
+                    
                 </div>
             </div>
             <div class="tab-pane fade" id="progress" role="tabpanel" aria-labelledby="progress-tab">
@@ -56,13 +57,21 @@
                     @include('retailer.tickets.table', ['tickets' => $inProgressTickets])
                 </div>
             </div>
-            <div class="tab-pane fade" id="complete" role="tabpanel" aria-labelledby="complete-tab">
+            <!-- <div class="tab-pane fade" id="complete" role="tabpanel" aria-labelledby="complete-tab">
                 <div class="card shadow mb-4">
                     @include('retailer.tickets.table', ['tickets' => $completedTickets])
                 </div>
+            </div> -->
+        </div>
+        <div class="row px-3">
+            <div class="col-md-9"> Page 1 of 1</div>
+            <div class="col-md-3 text-right">
+                <button type="button" class=" btn-primary btn">Never</button>
+                <button type="button" class="btn border text-grey">Close</button>
             </div>
         </div>
     </div>
+    
     <!-- -------` -->
 
     <!-- Modal -->
@@ -271,56 +280,27 @@
             function generateCustomHtml(tickets) {
                 console.log('Custom Html ==' + tickets)
                 let html =
-                    '<div class="card-body"><div class="table-responsive"><table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"><thead><tr><th>Ticket #</th><th>Task</th><th>Type</th><th>Device</th><th>Status</th><th>Action</th><th>Print Ticket</th><th>Print Label</th></tr></thead><tbody>';
+                    '<div class="card-body pb-2"><div class="table-responsive ticket-table"><table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"><thead><tr><th> </th><th>STATUS</th><th>BOOKED</th><th>DEVICE</th><th>PROBLEM TYPE</th><th>CUSTOMER</th><th>TIME REMAINING </th></tr></thead><tbody>';
 
                 tickets.forEach(ticket => {
                     console.log();
                     html += '<tr>';
-                    html += '<td><a href="#" data-toggle="modal" data-target="#exampleModal">' + ticket
+                    html += '<td><a class="text-dark" href="#" data-toggle="modal" data-target="#exampleModal">' + ticket
                         .ticket_id + '</a></td>';
                     // Accessing customer and serviceDetail attributes
-                    html += '<td>' + (ticket.customer ? ticket.customer.first_name + ' ' + ticket.customer
-                        .last_name : 'No Customer') + '</td>';
-                    html += '<td>' + (ticket.service_detail ? ticket.service_detail.device_issue.issue_description :
-                        'No Device Issue') + '</td>';
+                    
+                    html += '<td><button class="pending btn text-white py-0 f-14 bg-gradient-warning">' +
+                        capitalizeFirstLetter(replaceUnderscore(ticket.ticket_status)) + '</button></td>';
+                    html += '<td> 23.01.24 17:00 Issue </td>';
                     html += '<td>' + (ticket.service_detail ? ticket.service_detail.device_name :
                         'No Repair Category') + '</td>';
-                    html += '<td><button class="pending btn text-white py-1 f-14 bg-gradient-warning">' +
-                        capitalizeFirstLetter(replaceUnderscore(ticket.ticket_status)) + '</button></td>';
-                    html += '<td>' +
-                        '<div class="form-group">' +
-                        '<select id="dropdown" name="role" class="form-control" onchange="changeStatus(this.value, ' +
-                        ticket.id + ')">' +
-                        '<option value="in_progress" ' + (ticket.ticket_status == 'pending' ?
-                            'selected' : '') + '>Pending</option>'+
-                        '<option value="in_progress" ' + (ticket.ticket_status == 'in_progress' ?
-                            'selected' : '') + '>In Progress</option>' +
-                        '<option value="awaiting_collection" ' + (ticket.ticket_status ==
-                            'awaiting_collection' ? 'selected' : '') +
-                        '>Awaiting Collection (send sms or email)</option>' +
-                        '<option value="awaiting_parts" ' + (ticket.ticket_status == 'awaiting_parts' ?
-                            'selected' : '') + '>Awaiting for parts</option>' +
-                        '<option value="dispatch" ' + (ticket.ticket_status == 'dispatch' ? 'selected' :
-                        '') + '>Dispatch to repair center</option>' +
-                        '<option value="completed" ' + (ticket.ticket_status == 'completed' ? 'selected' :
-                            '') + '>Completed</option>' +
-                        '<option value="canceled" ' + (ticket.ticket_status == 'canceled' ? 'selected' :
-                        '') + '>Canceled</option>' +
-                        '</select>' +
-                        '</div>' +
-                        '</td>';
-
-                    // Print Ticket Button
-                    html += '<td><button class="btn btn-sm btn-primary" onclick="printTicket(\'' + ticket
-                        .id +
-                        '\')" style="height: 70px; width: 70px; font-size:14px;">Print Ticket</button></td>';
-
-
+                    html += '<td>' + (ticket.service_detail ? ticket.service_detail.device_issue.issue_description :
+                        'No Device Issue') + '</td>';   
+                    html += '<td>' + (ticket.customer ? ticket.customer.first_name + ' ' + ticket.customer
+                        .last_name : 'No Customer') + '</td>';
 
                     // Print Label Button
-                    html += '<td><button class="btn btn-success btn-sm" onclick="printLabel(\'' + ticket
-                        .id +
-                        '\')"style="height: 70px; width: 70px; font-size:14px;">Print Label</button></td>';
+                    html += '<td> </td>';
 
                     html += '</tr>';
                 });

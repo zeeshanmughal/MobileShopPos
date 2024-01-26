@@ -88,6 +88,25 @@ Route::group(['middleware' => ['retailer.auth','is_verify_email']], function () 
 
     // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('/retailer/dashboard', [RetailerController::class, 'dashboard'])->name('retailer.dashboard');
+    Route::get('/retailer/home', [RetailerController::class, 'home'])->name('retailer.home');
+    Route::get('/retailer/pos_data', [RetailerController::class, 'pos_data'])->name('retailer.pos_data');
+    Route::get('/retailer/buy_sell', [RetailerController::class, 'buy_sell'])->name('retailer.buy_sell');
+    Route::get('/retailer/buy_trade', [RetailerController::class, 'buy_trade'])->name('retailer.buy_trade');
+    Route::get('/retailer/appointments', [RetailerController::class, 'appointments'])->name('retailer.appointments');
+    Route::get('/retailer/supplier', [RetailerController::class, 'supplier'])->name('retailer.supplier');
+    Route::get('/retailer/transactions', [RetailerController::class, 'transactions'])->name('retailer.transactions');
+    Route::get('/retailer/category', [RetailerController::class, 'category'])->name('retailer.category');
+    Route::get('/retailer/product', [RetailerController::class, 'product'])->name('retailer.product');
+    Route::get('/retailer/notifications', [RetailerController::class, 'notifications'])->name('retailer.notifications');
+    Route::get('/retailer/notes', [RetailerController::class, 'notes'])->name('retailer.notes');
+    Route::get('/retailer/pending_return', [RetailerController::class, 'pending_return'])->name('retailer.pending_return');
+    Route::get('/retailer/sale_list', [RetailerController::class, 'sale_list'])->name('retailer.sale_list');
+    Route::get('/retailer/new_product', [RetailerController::class, 'new_product'])->name('retailer.new_product');
+    Route::get('/retailer/edit_product', [RetailerController::class, 'edit_product'])->name('retailer.edit_product');
+    Route::get('/retailer/product_detail', [RetailerController::class, 'product_detail'])->name('retailer.product_detail');
+    Route::get('/retailer/low_stock', [RetailerController::class, 'low_stock'])->name('retailer.low_stock');
+    Route::get('/retailer/new_supplier', [RetailerController::class, 'new_supplier'])->name('retailer.new_supplier');
+    Route::get('/retailer/customers_detail', [RetailerController::class, 'customers_detail'])->name('retailer.customers_detail');
     Route::get('/customer/create', [RetailerController::class, 'customers'])->name('customer.create');
     Route::get('/customer/search', [RetailerController::class, 'search_customer'])->name('customer.search');
     
@@ -113,11 +132,16 @@ Route::group(['middleware' => ['retailer.auth','is_verify_email']], function () 
     // Ticket Routes
     Route::post('/tickets/update-status', [TicketController::class, 'updateTicketStatus'])->name('tickets.updateStatus');
     Route::get('/tickets', [TicketController::class, 'tickets'])->name('ticket.index');
+    Route::get('/tickets/new_tickets', [TicketController::class, 'new_tickets'])->name('new_tickets');
     Route::get('/search-tickets/{status?}', [TicketController::class, 'searchTickets'])->name('search-tickets');
     Route::get('/tickets/print-ticket/{ticketId}', [TicketController::class, 'printTicket'])->name('ticket.print');
     Route::get('/print-label', [TicketController::class, 'printLable'])->name('label.print');
 
 
+    // Route::get('tickets/new_tickets', function () {
+    //     return view('tickets.new_tickets');
+    // })->name('new_tickets');
+    
     // Phone Buy and Sell
     Route::get('/phone-buy', [PhoneController::class, 'createPhoneBuy'])->name('phone_buy.create');
     Route::post('/phone-buy', [PhoneController::class, 'storePhoneBuy'])->name('phone_buy.store');
